@@ -10,7 +10,10 @@ A fast, secure, and privacy-focused local-first Markdown viewer and editor built
 
 ### Core Functionality
 - **📝 Split-Screen Editor**: Edit Markdown on the left, see live preview on the right
-- **🎨 GitHub-Flavored Markdown**: Full support for tables, task lists, strikethrough, and more
+- **↔️ Resizable Partition**: Drag the vertical divider to customize your workspace layout
+- **🎨 GitHub-Flavored Markdown**: Full support for tables, task lists, and [GitHub alerts](https://github.com/orgs/community/discussions/16925)
+- **📐 LaTeX & Math**: Beautiful math formulas with `remark-math` and `katex`
+- **📊 Mermaid Diagrams**: Render flowcharts and diagrams directly from code
 - **🎯 Syntax Highlighting**: Beautiful code blocks with `rehype-highlight`
 - **🌓 Dark/Light Mode**: System-aware theme with manual toggle
 - **📱 Responsive Design**: Works seamlessly on desktop, tablet, and mobile
@@ -69,6 +72,7 @@ npm start
 2. **Edit and Preview**
    - Type Markdown in the left pane
    - See live preview on the right
+   - **Adjust Workspace**: Drag the vertical divider to resize panes
    - Toggle between Editor/Split/Preview modes
 
 3. **Export**
@@ -86,6 +90,8 @@ npm start
 - **Markdown**: 
   - [react-markdown](https://github.com/remarkjs/react-markdown)
   - [remark-gfm](https://github.com/remarkjs/remark-gfm)
+  - [remark-math](https://github.com/remarkjs/remark-math) & [katex](https://katex.org/)
+  - [mermaid](https://mermaid.js.org/)
   - [rehype-highlight](https://github.com/rehypejs/rehype-highlight)
 - **Icons**: [Lucide React](https://lucide.dev/)
 - **Theme**: [next-themes](https://github.com/pacocoursey/next-themes)
