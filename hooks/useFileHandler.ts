@@ -67,7 +67,7 @@ export function useFileHandler(initialContent: string) {
     const openFile = useCallback(async () => {
         try {
             if ("showOpenFilePicker" in window) {
-                const [handle] = await window.showOpenFilePicker({
+                const [handle] = await (window as any).showOpenFilePicker({
                     types: [
                         {
                             description: "Markdown Files",
@@ -120,7 +120,7 @@ export function useFileHandler(initialContent: string) {
     const saveFile = useCallback(async () => {
         try {
             if (state.fileHandle) {
-                const writable = await state.fileHandle.createWritable();
+                const writable = await (state.fileHandle as any).createWritable();
                 await writable.write(state.content);
                 await writable.close();
                 setState((prev) => ({ ...prev, isModified: false }));
@@ -141,7 +141,7 @@ export function useFileHandler(initialContent: string) {
         // Check for File System Access API support in DataTransferItem
         const item = items[0];
         if (item.kind === "file") {
-            const entry = item.getAsFileSystemHandle?.(); // Experimental
+            const entry = (item as any).getAsFileSystemHandle?.(); // Experimental
 
             if (entry && entry instanceof FileSystemFileHandle && entry.name.endsWith(".md")) {
                 const file = await entry.getFile();

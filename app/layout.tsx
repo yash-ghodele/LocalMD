@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import "highlight.js/styles/github-dark.css";
 import "katex/dist/katex.min.css";
+import "./github-alerts.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 

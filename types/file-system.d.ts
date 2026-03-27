@@ -1,8 +1,3 @@
-export { };
-
-interface FileSystemHandlePermissionDescriptor {
-    mode?: "read" | "readwrite";
-}
 
 interface ShowOpenFilePickerOptions {
     types?: Array<{

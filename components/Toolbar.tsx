@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Moon, Sun, FileText, Columns, Eye, Download, FileUp } from "lucide-react";
+import { Moon, Sun, FileText, Columns, Eye, Download, FileUp, Link as LinkIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
@@ -11,6 +11,8 @@ interface ToolbarProps {
     onExportPdf: () => void;
     viewMode: "split" | "editor" | "preview";
     setViewMode: (mode: "split" | "editor" | "preview") => void;
+    isSyncScroll?: boolean;
+    setIsSyncScroll?: (isSync: boolean) => void;
 }
 
 export function Toolbar({
@@ -19,13 +21,18 @@ export function Toolbar({
     onExportPdf,
     viewMode,
     setViewMode,
+    isSyncScroll,
+    setIsSyncScroll,
 }: ToolbarProps) {
     const { theme, setTheme } = useTheme();
 
     return (
         <div className="flex items-center justify-between border-b px-4 py-2 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
             <div className="flex items-center gap-2">
-                <h1 className="text-sm font-semibold mr-4 hidden md:block">MD Viewer</h1>
+                <div className="flex items-center gap-2 mr-4">
+                    <img src="/icon.png" alt="App Icon" className="w-6 h-6 rounded-md" />
+                    <h1 className="text-sm font-semibold hidden md:block">MD Viewer</h1>
+                </div>
                 <button
                     onClick={onOpenFile}
                     className="flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
@@ -79,15 +86,48 @@ export function Toolbar({
 
                 <div className="h-4 w-px bg-border mx-1" />
 
-                <button
-                    onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                    className="relative p-2 hover:bg-accent rounded-md transition-colors text-muted-foreground hover:text-foreground"
-                    title="Toggle Theme"
-                >
-                    <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                    <Moon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                    <span className="sr-only">Toggle Theme</span>
-                </button>
+                {setIsSyncScroll && (
+                    <button
+                        onClick={() => setIsSyncScroll(!isSyncScroll)}
+                        className={cn(
+                            "relative p-2 rounded-md transition-all duration-200",
+                            isSyncScroll
+                                ? "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90"
+                                : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                        )}
+                        title={isSyncScroll ? "Sync Scrolling On" : "Sync Scrolling Off"}
+                    >
+                        <LinkIcon className="h-4 w-4" />
+                        <span className="sr-only">Toggle Sync Scroll</span>
+                    </button>
+                )}
+
+                <div className="h-4 w-px bg-border mx-1" />
+
+                <div className="flex bg-muted rounded-md p-1 h-[28px] items-center">
+                    <button
+                        onClick={() => setTheme("light")}
+                        className={cn(
+                            "p-1 rounded-sm transition-all text-xs flex items-center justify-center w-7 h-5",
+                            theme === "light" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                        )}
+                        title="Light Mode"
+                    >
+                        <Sun className="h-3.5 w-3.5" />
+                        <span className="sr-only">Light</span>
+                    </button>
+                    <button
+                        onClick={() => setTheme("dark")}
+                        className={cn(
+                            "p-1 rounded-sm transition-all text-xs flex items-center justify-center w-7 h-5",
+                            theme === "dark" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                        )}
+                        title="Dark Mode"
+                    >
+                        <Moon className="h-3.5 w-3.5" />
+                        <span className="sr-only">Dark</span>
+                    </button>
+                </div>
             </div>
         </div>
     );

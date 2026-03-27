@@ -1,15 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import dynamic from "next/dynamic";
 import { Toolbar } from "./Toolbar";
-import { TableOfContents } from "./TableOfContents";
+import { EditorToolbar } from "./EditorToolbar";
 import { cn } from "@/lib/utils";
 import { useFileHandler } from "@/hooks/useFileHandler";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useTheme } from "next-themes";
-import MarkdownPreview from "./MarkdownPreview";
 import { remark } from "remark";
 import html from "remark-html";
+
+const MarkdownPreview = dynamic(() => import("./MarkdownPreview"), { ssr: false });
+const TableOfContents = dynamic(() => import("./TableOfContents").then(mod => ({ default: mod.TableOfContents })), { ssr: false });
 
 export default function MarkdownViewer() {
     const { content, fileName, isModified, fileHandle, setContent, openFile, saveFile, handleDrop } = useFileHandler(
@@ -17,6 +20,42 @@ export default function MarkdownViewer() {
     );
     const [viewMode, setViewMode] = useState<"split" | "editor" | "preview">("split");
     const { setTheme, theme } = useTheme();
+    const [isSyncScroll, setIsSyncScroll] = useState(true);
+    const [splitPosition, setSplitPosition] = useState(50);
+    const [isResizing, setIsResizing] = useState(false);
+
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const previewContainerRef = useRef<HTMLDivElement>(null);
+    const isScrollingRef = useRef(false);
+    const mainRef = useRef<HTMLElement>(null);
+
+    const handleEditorScroll = (e: React.UIEvent<HTMLTextAreaElement>) => {
+        if (!isSyncScroll || viewMode !== "split" || isScrollingRef.current) return;
+
+        const textarea = e.currentTarget;
+        const preview = previewContainerRef.current;
+        if (!preview) return;
+
+        isScrollingRef.current = true;
+        const percentage = textarea.scrollTop / (textarea.scrollHeight - textarea.clientHeight);
+        preview.scrollTop = percentage * (preview.scrollHeight - preview.clientHeight);
+
+        setTimeout(() => { isScrollingRef.current = false; }, 50);
+    };
+
+    const handlePreviewScroll = (e: React.UIEvent<HTMLDivElement>) => {
+        if (!isSyncScroll || viewMode !== "split" || isScrollingRef.current) return;
+
+        const preview = e.currentTarget;
+        const textarea = textareaRef.current;
+        if (!textarea) return;
+
+        isScrollingRef.current = true;
+        const percentage = preview.scrollTop / (preview.scrollHeight - preview.clientHeight);
+        textarea.scrollTop = percentage * (textarea.scrollHeight - textarea.clientHeight);
+
+        setTimeout(() => { isScrollingRef.current = false; }, 50);
+    };
 
     const handleExportHtml = async () => {
         try {
@@ -79,6 +118,47 @@ export default function MarkdownViewer() {
         },
     });
 
+    const handleToggleTask = (index: number, checked: boolean) => {
+        const lines = content.split("\n");
+        let currentIndex = 0;
+
+        const newLines = lines.map(line => {
+            // Check if line contains a task list item
+            const taskMatch = line.match(/^(\s*-\s+)\[([ x])\]/);
+            if (taskMatch) {
+                if (currentIndex === index) {
+                    // Toggle the checkbox
+                    return line.replace(/^(\s*-\s+)\[([ x])\]/, `$1[${checked ? "x" : " "}]`);
+                }
+                currentIndex++;
+            }
+            return line;
+        });
+
+        if (currentIndex > index) {
+            setContent(newLines.join("\n"));
+        }
+    };
+
+    const handleInsert = (before: string, after: string = "") => {
+        const textarea = textareaRef.current;
+        if (!textarea) return;
+
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const selectedText = content.substring(start, end);
+        const newText = content.substring(0, start) + before + selectedText + after + content.substring(end);
+
+        setContent(newText);
+
+        // Set cursor position after insertion
+        setTimeout(() => {
+            textarea.focus();
+            const newCursorPos = start + before.length + (selectedText ? selectedText.length : 0);
+            textarea.setSelectionRange(newCursorPos, newCursorPos);
+        }, 0);
+    };
+
     const [isDragging, setIsDragging] = useState(false);
     const onDragOver = (e: React.DragEvent) => {
         e.preventDefault();
@@ -90,6 +170,44 @@ export default function MarkdownViewer() {
         handleDrop(e);
     };
 
+    const handleMouseDown = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setIsResizing(true);
+    };
+
+    React.useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            if (!isResizing || !mainRef.current) return;
+            
+            const rect = mainRef.current.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const percentage = (x / rect.width) * 100;
+            
+            // Limit range between 20% and 80%
+            if (percentage >= 15 && percentage <= 85) {
+                setSplitPosition(percentage);
+            }
+        };
+
+        const handleMouseUp = () => {
+            setIsResizing(false);
+        };
+
+        if (isResizing) {
+            window.addEventListener("mousemove", handleMouseMove);
+            window.addEventListener("mouseup", handleMouseUp);
+            document.body.style.cursor = "col-resize";
+            document.body.style.userSelect = "none";
+        }
+
+        return () => {
+            window.removeEventListener("mousemove", handleMouseMove);
+            window.removeEventListener("mouseup", handleMouseUp);
+            document.body.style.cursor = "";
+            document.body.style.userSelect = "";
+        };
+    }, [isResizing]);
+
     return (
         <div
             className="flex flex-col h-screen overflow-hidden print:h-auto print:overflow-visible"
@@ -98,9 +216,16 @@ export default function MarkdownViewer() {
             onDrop={onDrop}
         >
             <div className="flex items-center justify-between px-4 py-1 bg-background border-b text-xs text-muted-foreground print:hidden">
-                <span>
-                    {fileName}
-                    {isModified ? "*" : ""}
+                <span className="flex items-center gap-4">
+                    <span>
+                        {fileName}
+                        {isModified ? "*" : ""}
+                    </span>
+                    <span className="hidden sm:inline opacity-70">
+                        {content.trim().split(/\s+/).filter(w => w.length > 0).length} words
+                        {" • "}
+                        {content.length} chars
+                    </span>
                 </span>
                 <span className="hidden sm:inline">Auto-saved to Local Storage</span>
             </div>
@@ -112,10 +237,15 @@ export default function MarkdownViewer() {
                     onExportPdf={handleExportPdf}
                     viewMode={viewMode}
                     setViewMode={setViewMode}
+                    isSyncScroll={isSyncScroll}
+                    setIsSyncScroll={setIsSyncScroll}
                 />
             </div>
 
-            <main className="flex-1 flex overflow-hidden relative print:overflow-visible print:block">
+            <main 
+                ref={mainRef}
+                className="flex-1 flex overflow-hidden relative print:overflow-visible print:block"
+            >
                 {/* Drag Overlay */}
                 {isDragging && (
                     <div className="absolute inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center m-4 rounded-xl border-2 border-primary border-dashed animate-pulse print:hidden">
@@ -123,14 +253,25 @@ export default function MarkdownViewer() {
                     </div>
                 )}
 
+                {/* Resizing Overlay to prevent interaction with textarea/preview while dragging */}
+                {isResizing && (
+                    <div className="absolute inset-0 z-40 cursor-col-resize print:hidden" />
+                )}
+
                 {/* Editor Pane */}
                 <div
                     className={cn(
-                        "flex-1 flex flex-col min-w-0 border-r transition-all duration-300 print:hidden bg-background",
+                        "flex flex-col min-w-0 border-r transition-none duration-300 print:hidden bg-background",
                         viewMode === "preview" ? "hidden" : "flex"
                     )}
+                    style={{ 
+                        flex: viewMode === "split" ? `0 0 ${splitPosition}%` : "1 1 0%" 
+                    }}
                 >
+                    <EditorToolbar onInsert={handleInsert} />
                     <textarea
+                        ref={textareaRef}
+                        onScroll={handleEditorScroll}
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         className="flex-1 w-full h-full p-6 resize-none bg-transparent font-mono text-sm leading-relaxed focus:outline-none focus:ring-0 placeholder:text-muted-foreground/50"
@@ -139,21 +280,45 @@ export default function MarkdownViewer() {
                     />
                 </div>
 
+                {/* Draggable Divider */}
+                {viewMode === "split" && (
+                    <div
+                        onMouseDown={handleMouseDown}
+                        className={cn(
+                            "w-1 h-full cursor-col-resize hover:bg-primary/50 transition-colors z-30 group print:hidden",
+                            isResizing ? "bg-primary" : "bg-transparent -ml-0.5"
+                        )}
+                    >
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="w-1 h-4 bg-muted-foreground rounded-full" />
+                            <div className="w-1 h-4 bg-muted-foreground rounded-full ml-0.5" />
+                        </div>
+                    </div>
+                )}
+
                 {/* Preview Pane */}
                 <div
                     className={cn(
-                        "flex-1 flex flex-col min-w-0 bg-secondary/30 transition-all duration-300 overflow-hidden print:bg-white print:overflow-visible print:block",
+                        "flex flex-col min-w-0 bg-secondary/30 transition-none duration-300 overflow-hidden print:bg-white print:overflow-visible print:block",
                         viewMode === "editor" ? "hidden" : "flex"
                     )}
+                    style={{ 
+                        flex: viewMode === "split" ? `0 0 ${100 - splitPosition}%` : "1 1 0%" 
+                    }}
                 >
-                    <div className="h-full w-full overflow-auto p-8 print:p-0 print:overflow-visible">
-                        <MarkdownPreview content={content} />
+                    <div
+                        ref={previewContainerRef}
+                        onScroll={handlePreviewScroll}
+                        className="h-full w-full overflow-auto p-8 print:p-0 print:overflow-visible"
+                    >
+                        <MarkdownPreview content={content} onToggleTask={handleToggleTask} />
                     </div>
                 </div>
             </main>
 
             {/* Table of Contents */}
             <TableOfContents content={content} />
+
 
             {/* Print Styles */}
             <style jsx global>{`

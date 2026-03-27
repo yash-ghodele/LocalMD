@@ -1,84 +1,103 @@
 "use client";
 
-import React, { memo, useEffect, useRef } from "react";
+import React, { memo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
+import remarkGemoji from "remark-gemoji";
+import remarkGithubBlockquoteAlert from "remark-github-blockquote-alert";
 import rehypeHighlight from "rehype-highlight";
 import rehypeKatex from "rehype-katex";
-import mermaid from "mermaid";
+import { MermaidDiagram } from "./MermaidDiagram";
+import { Check, Copy } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface MarkdownPreviewProps {
     content: string;
+    onToggleTask?: (index: number, checked: boolean) => void;
 }
 
-// Initialize Mermaid
-if (typeof window !== "undefined") {
-    mermaid.initialize({
-        startOnLoad: true,
-        theme: "default",
-        securityLevel: "loose",
-        fontFamily: "inherit",
-    });
-}
+const CodeBlock = function ({ className, children, ...props }: any) {
+    const [copied, setCopied] = useState(false);
+    const match = /language-(\w+)/.exec(className || "");
+    const language = match ? match[1] : "";
+    const codeString = String(children).replace(/\n$/, "");
+    const isInline = !match && !Buffer.isBuffer(children) && !String(children).includes("\n");
 
-const MarkdownPreview = memo(function MarkdownPreview({ content }: MarkdownPreviewProps) {
-    const previewRef = useRef<HTMLDivElement>(null);
+    // Render Mermaid diagrams with custom component (no DOM manipulation!)
+    if (language === "mermaid") {
+        return <MermaidDiagram chart={codeString} />;
+    }
 
-    useEffect(() => {
-        if (previewRef.current) {
-            const mermaidElements = previewRef.current.querySelectorAll(".language-mermaid");
-            mermaidElements.forEach((element, index) => {
-                const code = element.textContent || "";
-                const id = `mermaid-${Date.now()}-${index}`;
-                const container = document.createElement("div");
-                container.className = "mermaid-diagram";
+    // Inline code
+    if (isInline) {
+        return (
+            <code className={className} {...props}>
+                {children}
+            </code>
+        );
+    }
 
-                mermaid.render(id, code).then(({ svg }) => {
-                    container.innerHTML = svg;
-                    element.parentElement?.replaceWith(container);
-                }).catch((error) => {
-                    console.error("Mermaid rendering error:", error);
-                    container.innerHTML = `<pre class="text-red-500">Mermaid diagram error: ${error.message}</pre>`;
-                    element.parentElement?.replaceWith(container);
-                });
-            });
+    // Block code with copy button
+    const handleCopy = async () => {
+        try {
+            await navigator.clipboard.writeText(codeString);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch (err) {
+            console.error("Failed to copy:", err);
         }
-    }, [content]);
+    };
 
     return (
-        <div ref={previewRef} className="prose prose-sm dark:prose-invert max-w-none w-full break-words">
+        <div className="relative group">
+            <button
+                onClick={handleCopy}
+                className="absolute right-2 top-2 p-1.5 rounded-md bg-muted/50 hover:bg-muted text-muted-foreground transition-all opacity-0 group-hover:opacity-100 focus:opacity-100 z-10"
+                title="Copy code"
+            >
+                {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+            </button>
+            <code className={className} {...props}>
+                {children}
+            </code>
+        </div>
+    );
+};
+
+const MarkdownPreview = memo(function MarkdownPreview({ content, onToggleTask }: MarkdownPreviewProps) {
+    // Counter to track which checkbox we are rendering
+    let checkboxIndex = 0;
+
+    return (
+        <div className="prose prose-sm dark:prose-invert max-w-none w-full break-words">
             <ReactMarkdown
-                remarkPlugins={[remarkGfm, remarkMath]}
+                remarkPlugins={[remarkGfm, remarkMath, remarkGemoji, remarkGithubBlockquoteAlert]}
                 rehypePlugins={[rehypeHighlight, rehypeKatex]}
                 components={{
-                    code({ inline, className, children, ...props }: {
-                        inline?: boolean;
-                        className?: string;
-                        children?: React.ReactNode;
-                    }) {
-                        const match = /language-(\w+)/.exec(className || "");
-                        const language = match ? match[1] : "";
-
-                        // Handle Mermaid separately
-                        if (language === "mermaid") {
-                            return (
-                                <code className={className} {...props}>
-                                    {children}
-                                </code>
-                            );
+                    code: CodeBlock,
+                    input: (props) => {
+                        if (props.type !== "checkbox") {
+                            return <input {...props} />;
                         }
 
-                        return !inline && match ? (
-                            <code className={className} {...props}>
-                                {children}
-                            </code>
-                        ) : (
-                            <code className={className} {...props}>
-                                {children}
-                            </code>
+                        const currentIndex = checkboxIndex;
+                        checkboxIndex++;
+
+                        return (
+                            <input
+                                {...props}
+                                type="checkbox"
+                                onChange={() => {
+                                    if (onToggleTask) {
+                                        onToggleTask(currentIndex, !props.checked);
+                                    }
+                                }}
+                                className="cursor-pointer"
+                                disabled={!onToggleTask}
+                            />
                         );
-                    },
+                    }
                 }}
             >
                 {content}
