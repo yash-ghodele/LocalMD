@@ -14,10 +14,59 @@ import html from "remark-html";
 const MarkdownPreview = dynamic(() => import("./MarkdownPreview"), { ssr: false });
 const TableOfContents = dynamic(() => import("./TableOfContents").then(mod => ({ default: mod.TableOfContents })), { ssr: false });
 
+const WELCOME_MD = `# 🚀 Welcome to Local MD
+
+Experience the ultimate **Liquid Glassmorphism** Markdown editor. Fully offline, private, and premium.
+
+## ⌨️ Productivity Shortcuts
+
+| Action | Shortcut |
+| :--- | :--- |
+| **Open File** | \`Ctrl + O\` |
+| **Save File** | \`Ctrl + S\` |
+| **Export HTML** | \`Ctrl + E\` |
+| **Print / PDF** | \`Ctrl + P\` |
+| **Toggle View** | \`Ctrl + /\` |
+| **Toggle Theme** | \`Ctrl + D\` |
+
+---
+
+## ✨ Premium Features
+
+### 📊 Mermaid Diagrams
+\`\`\`mermaid
+graph TD
+    A[Write Markdown] --> B{Choose Theme}
+    B -->|Dark| C[Liquid Night]
+    B -->|Light| D[Frozen Day]
+    C --> E[Export PDF]
+    D --> E
+\`\`\`
+
+### 🧪 Mathematical Expressions
+The Schrödinger equation:
+$$i\hbar\frac{\partial}{\partial t}\Psi(\mathbf{r},t) = \hat{H}\Psi(\mathbf{r},t)$$
+
+### 🔔 GitHub-Style Alerts
+> [!TIP]
+> Use **Drag & Drop** to open any \`.md\` file instantly!
+
+> [!IMPORTANT]
+> This app works entirely in your browser. Your data never leaves your machine.
+
+---
+
+### ✅ Interactive Tasks
+- [x] High-fidelity UI Overhaul
+- [x] Theme-aware Splitter
+- [ ] Write my next masterpiece
+
+---
+*Start editing this file to see the liquid magic happen in real-time!*
+`;
+
 export default function MarkdownViewer() {
-    const { content, fileName, isModified, fileHandle, setContent, openFile, saveFile, handleDrop } = useFileHandler(
-        "# Welcome to Local Markdown Viewer\n\nStart typing or drag a file here."
-    );
+    const { content, fileName, isModified, fileHandle, setContent, openFile, saveFile, handleDrop } = useFileHandler(WELCOME_MD);
     const [viewMode, setViewMode] = useState<"split" | "editor" | "preview">("split");
     const { setTheme, theme } = useTheme();
     const [isSyncScroll, setIsSyncScroll] = useState(true);
