@@ -153,8 +153,15 @@
 .dark .prose h1, .dark .prose h2, .dark .prose h3, .dark .prose h4, .dark .prose h5, .dark .prose h6 {
   color: #ffffff !important;
 }
-.dark .prose p, .dark .prose li, .dark .prose strong, .dark .prose blockquote {
-  color: rgba(255, 255, 255, 0.9) !important;
+.dark .prose p, .dark .prose li, .dark .prose strong, .dark .prose blockquote, .dark .prose th, .dark .prose td {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.dark .prose blockquote {
+  border-left-color: var(--primary) !important;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.5rem 1rem;
+  border-radius: 0 0.5rem 0.5rem 0;
 }
 
 /* Syntax highlighting comments visibility in dark mode */
@@ -165,6 +172,12 @@
 }
 
 /* Ensure math and other blocks are also visible */
-.dark .katex {
+.dark .katex, .dark .katex * {
   color: #ffffff !important;
+}
+
+/* Fix inline code in tables */
+.dark .prose th code, .dark .prose td code {
+  color: var(--primary) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
 }

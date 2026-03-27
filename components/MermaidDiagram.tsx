@@ -3,18 +3,10 @@
 import React, { useEffect, useState } from "react";
 import mermaid from "mermaid";
 
+import { useTheme } from "next-themes";
+
 interface MermaidDiagramProps {
     chart: string;
-}
-
-// Initialize Mermaid once
-if (typeof window !== "undefined") {
-    mermaid.initialize({
-        startOnLoad: false,
-        theme: "default",
-        securityLevel: "loose",
-        fontFamily: "inherit",
-    });
 }
 
 let idCounter = 0;
@@ -22,12 +14,21 @@ let idCounter = 0;
 export function MermaidDiagram({ chart }: MermaidDiagramProps) {
     const [svg, setSvg] = useState<string>("");
     const [error, setError] = useState<string>("");
+    const { resolvedTheme } = useTheme();
     const [id] = useState(() => `mermaid-${Date.now()}-${idCounter++}`);
 
     useEffect(() => {
         const timer = setTimeout(() => {
             const renderDiagram = async () => {
                 try {
+                    // Re-initialize mermaid with current theme
+                    mermaid.initialize({
+                        startOnLoad: false,
+                        theme: resolvedTheme === "dark" ? "dark" : "default",
+                        securityLevel: "loose",
+                        fontFamily: "inherit",
+                    });
+
                     const { svg: renderedSvg } = await mermaid.render(id, chart);
                     setSvg(renderedSvg);
                     setError("");
@@ -38,10 +39,10 @@ export function MermaidDiagram({ chart }: MermaidDiagramProps) {
             };
 
             renderDiagram();
-        }, 300);
+        }, 100); // Shorter delay
 
         return () => clearTimeout(timer);
-    }, [chart, id]);
+    }, [chart, id, resolvedTheme]);
 
     if (error) {
         return (
@@ -53,11 +54,16 @@ export function MermaidDiagram({ chart }: MermaidDiagramProps) {
 
     if (!svg) {
         return (
-            <div className="text-muted-foreground text-xs p-2 bg-muted rounded">
+            <div className="text-muted-foreground text-xs p-2 bg-muted/20 rounded animate-pulse">
                 Rendering diagram...
             </div>
         );
     }
 
-    return <div className="mermaid-diagram my-4" dangerouslySetInnerHTML={{ __html: svg }} />;
+    return (
+        <div 
+            className="mermaid-diagram my-6 overflow-x-auto flex justify-center bg-white/5 p-4 rounded-xl border border-white/10" 
+            dangerouslySetInnerHTML={{ __html: svg }} 
+        />
+    );
 }
