@@ -11,7 +11,28 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Local Markdown Viewer",
-  description: "Offline-first Markdown viewer and editor",
+  description: "A fast, secure, and privacy-focused local-first Markdown viewer and editor. All your data stays on your device.",
+  keywords: ["Markdown", "Viewer", "Editor", "Local-first", "Privacy", "Developer Tools", "Next.js", "PWA"],
+  authors: [{ name: "Yash Ghodele", url: "https://github.com/yash-ghodele" }],
+  creator: "Yash Ghodele",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://localmd.vercel.app",
+    title: "Local Markdown Viewer",
+    description: "Privacy-focused local-first Markdown viewer and editor",
+    siteName: "Local Markdown Viewer",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Local Markdown Viewer",
+    description: "Privacy-focused local-first Markdown viewer and editor",
+    creator: "@yash_ghodele",
+  },
+  icons: {
+    icon: "/icon.png",
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({

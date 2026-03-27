@@ -210,27 +210,30 @@ export default function MarkdownViewer() {
 
     return (
         <div
-            className="flex flex-col h-screen overflow-hidden print:h-auto print:overflow-visible"
+            className="flex flex-col h-screen overflow-hidden print:h-auto print:overflow-visible bg-liquid text-foreground font-sans selection:bg-primary/30"
             onDragOver={onDragOver}
             onDragLeave={onDragLeave}
             onDrop={onDrop}
         >
-            <div className="flex items-center justify-between px-4 py-1 bg-background border-b text-xs text-muted-foreground print:hidden">
-                <span className="flex items-center gap-4">
-                    <span>
-                        {fileName}
-                        {isModified ? "*" : ""}
+            {/* Minimalist Top Status Bar */}
+            <div className="flex items-center justify-between px-6 py-2 bg-white/5 backdrop-blur-md border-b border-white/10 text-[10px] uppercase tracking-widest text-muted-foreground/80 print:hidden z-50">
+                <div className="flex items-center gap-6">
+                    <span className="flex items-center gap-2">
+                        <div className={cn("w-1.5 h-1.5 rounded-full", isModified ? "bg-amber-500 animate-pulse" : "bg-emerald-500")} />
+                        <span className="font-semibold text-foreground/90">{fileName}</span>
                     </span>
-                    <span className="hidden sm:inline opacity-70">
-                        {content.trim().split(/\s+/).filter(w => w.length > 0).length} words
-                        {" • "}
-                        {content.length} chars
+                    <span className="hidden sm:inline border-l border-white/10 pl-6 space-x-4">
+                        <span>{content.trim().split(/\s+/).filter(w => w.length > 0).length} Words</span>
+                        <span>{content.length} Characters</span>
                     </span>
-                </span>
-                <span className="hidden sm:inline">Auto-saved to Local Storage</span>
+                </div>
+                <div className="flex items-center gap-4">
+                    <span className="hidden sm:inline opacity-50">Local Storage Sync</span>
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/50" />
+                </div>
             </div>
 
-            <div className="print:hidden">
+            <div className="print:hidden relative z-40">
                 <Toolbar
                     onOpenFile={openFile}
                     onExportHtml={handleExportHtml}
@@ -244,7 +247,7 @@ export default function MarkdownViewer() {
 
             <main 
                 ref={mainRef}
-                className="flex-1 flex overflow-hidden relative print:overflow-visible print:block"
+                className="flex-1 flex overflow-hidden relative p-4 gap-4 print:p-0 print:block"
             >
                 {/* Drag Overlay */}
                 {isDragging && (
@@ -261,8 +264,9 @@ export default function MarkdownViewer() {
                 {/* Editor Pane */}
                 <div
                     className={cn(
-                        "flex flex-col min-w-0 border-r transition-none duration-300 print:hidden bg-background",
-                        viewMode === "preview" ? "hidden" : "flex"
+                        "flex flex-col min-w-0 glass rounded-2xl overflow-hidden transition-all duration-500 print:hidden shadow-2xl",
+                        viewMode === "preview" ? "hidden" : "flex",
+                        isResizing ? "transition-none" : ""
                     )}
                     style={{ 
                         flex: viewMode === "split" ? `0 0 ${splitPosition}%` : "1 1 0%" 
@@ -274,8 +278,8 @@ export default function MarkdownViewer() {
                         onScroll={handleEditorScroll}
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
-                        className="flex-1 w-full h-full p-6 resize-none bg-transparent font-mono text-sm leading-relaxed focus:outline-none focus:ring-0 placeholder:text-muted-foreground/50"
-                        placeholder="Type markdown here..."
+                        className="flex-1 w-full h-full p-8 resize-none bg-transparent font-mono text-sm leading-relaxed focus:outline-none focus:ring-0 placeholder:text-muted-foreground/30 text-foreground/90 selection:bg-primary/40 scrollbar-thin scrollbar-thumb-white/10"
+                        placeholder="Ignite your creativity..."
                         spellCheck={false}
                     />
                 </div>
@@ -285,13 +289,13 @@ export default function MarkdownViewer() {
                     <div
                         onMouseDown={handleMouseDown}
                         className={cn(
-                            "w-1 h-full cursor-col-resize hover:bg-primary/50 transition-colors z-30 group print:hidden",
-                            isResizing ? "bg-primary" : "bg-transparent -ml-0.5"
+                            "w-1.5 h-1/2 self-center cursor-col-resize hover:bg-primary/40 transition-all z-30 group print:hidden rounded-full flex items-center justify-center",
+                            isResizing ? "bg-primary scale-y-110 shadow-[0_0_15px_rgba(139,92,246,0.5)]" : "bg-black/10 dark:bg-white/10"
                         )}
                     >
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <div className="w-1 h-4 bg-muted-foreground rounded-full" />
-                            <div className="w-1 h-4 bg-muted-foreground rounded-full ml-0.5" />
+                        <div className="w-1 h-8 flex flex-col items-center justify-center gap-1 opacity-40 group-hover:opacity-100 transition-opacity">
+                            <div className="w-1 h-3 bg-black dark:bg-white rounded-full" />
+                            <div className="w-1 h-3 bg-black dark:bg-white rounded-full" />
                         </div>
                     </div>
                 )}
@@ -299,8 +303,9 @@ export default function MarkdownViewer() {
                 {/* Preview Pane */}
                 <div
                     className={cn(
-                        "flex flex-col min-w-0 bg-secondary/30 transition-none duration-300 overflow-hidden print:bg-white print:overflow-visible print:block",
-                        viewMode === "editor" ? "hidden" : "flex"
+                        "flex flex-col min-w-0 glass rounded-2xl overflow-hidden transition-all duration-500 shadow-2xl print:bg-white print:overflow-visible print:block",
+                        viewMode === "editor" ? "hidden" : "flex",
+                        isResizing ? "transition-none" : ""
                     )}
                     style={{ 
                         flex: viewMode === "split" ? `0 0 ${100 - splitPosition}%` : "1 1 0%" 
@@ -309,7 +314,7 @@ export default function MarkdownViewer() {
                     <div
                         ref={previewContainerRef}
                         onScroll={handlePreviewScroll}
-                        className="h-full w-full overflow-auto p-8 print:p-0 print:overflow-visible"
+                        className="h-full w-full overflow-auto p-10 print:p-0 print:overflow-visible scrollbar-thin scrollbar-thumb-white/10"
                     >
                         <MarkdownPreview content={content} onToggleTask={handleToggleTask} />
                     </div>

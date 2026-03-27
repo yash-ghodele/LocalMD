@@ -27,106 +27,106 @@ export function Toolbar({
     const { theme, setTheme } = useTheme();
 
     return (
-        <div className="flex items-center justify-between border-b px-4 py-2 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-            <div className="flex items-center gap-2">
-                <div className="flex items-center gap-2 mr-4">
-                    <img src="/icon.png" alt="App Icon" className="w-6 h-6 rounded-md" />
-                    <h1 className="text-sm font-semibold hidden md:block">MD Viewer</h1>
+        <div className="flex items-center justify-center pt-4 sticky top-0 z-50 pointer-events-none">
+            <div className="flex items-center gap-4 px-6 py-2.5 glass rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-white/10 pointer-events-auto transition-all duration-500 hover:scale-[1.02] hover:shadow-primary/20">
+                <div className="flex items-center gap-3 pr-4 border-r border-black/5 dark:border-white/10">
+                    <img src="/icon.png" alt="App Icon" className="w-7 h-7 rounded-lg shadow-lg" />
+                    <h1 className="text-xs font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-[var(--logo-from)] to-[var(--logo-to)] hidden lg:block uppercase italic">Local MD</h1>
                 </div>
-                <button
-                    onClick={onOpenFile}
-                    className="flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
-                    title="Open File"
-                >
-                    <FileUp className="w-3.5 h-3.5" />
-                    <span>Open File</span>
-                </button>
 
-                <div className="h-4 w-px bg-border mx-1" />
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={onOpenFile}
+                        className="flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl bg-primary text-primary-foreground hover:shadow-lg hover:shadow-primary/40 transition-all active:scale-95"
+                        title="Open File"
+                    >
+                        <FileUp className="w-3.5 h-3.5" />
+                        <span className="hidden sm:inline">Open</span>
+                    </button>
 
-                <div className="flex bg-muted rounded-md p-1">
-                    <ViewToggle
-                        active={viewMode === "editor"}
-                        onClick={() => setViewMode("editor")}
-                        icon={FileText}
-                        label="Editor"
-                    />
-                    <ViewToggle
-                        active={viewMode === "split"}
-                        onClick={() => setViewMode("split")}
-                        icon={Columns}
-                        label="Split"
-                    />
-                    <ViewToggle
-                        active={viewMode === "preview"}
-                        onClick={() => setViewMode("preview")}
-                        icon={Eye}
-                        label="Preview"
-                    />
+                    <div className="flex bg-muted/50 dark:bg-white/5 rounded-xl p-1 border border-black/5 dark:border-white/5">
+                        <ViewToggle
+                            active={viewMode === "editor"}
+                            onClick={() => setViewMode("editor")}
+                            icon={FileText}
+                            label="Editor"
+                        />
+                        <ViewToggle
+                            active={viewMode === "split"}
+                            onClick={() => setViewMode("split")}
+                            icon={Columns}
+                            label="Split"
+                        />
+                        <ViewToggle
+                            active={viewMode === "preview"}
+                            onClick={() => setViewMode("preview")}
+                            icon={Eye}
+                            label="Preview"
+                        />
+                    </div>
                 </div>
-            </div>
 
-            <div className="flex items-center gap-1.5">
-                <button
-                    onClick={onExportHtml}
-                    className="flex items-center gap-2 px-2 py-1.5 text-xs font-medium rounded-md hover:bg-accent hover:text-accent-foreground transition-colors group"
-                    title="Export as HTML"
-                >
-                    <Download className="w-4 h-4 text-muted-foreground group-hover:text-foreground" />
-                    <span className="sr-only sm:not-sr-only sm:inline-block">HTML</span>
-                </button>
-                <button
-                    onClick={onExportPdf}
-                    className="flex items-center gap-2 px-2 py-1.5 text-xs font-medium rounded-md hover:bg-accent hover:text-accent-foreground transition-colors group"
-                    title="Export as PDF"
-                >
-                    <FileText className="w-4 h-4 text-muted-foreground group-hover:text-foreground" />
-                    <span className="sr-only sm:not-sr-only sm:inline-block">PDF</span>
-                </button>
+                <div className="h-6 w-px bg-black/5 dark:bg-white/10 mx-1" />
 
-                <div className="h-4 w-px bg-border mx-1" />
+                <div className="flex items-center gap-2">
+                    <div className="flex items-center bg-muted/50 dark:bg-white/5 rounded-xl border border-black/5 dark:border-white/5 overflow-hidden">
+                        <button
+                            onClick={onExportHtml}
+                            className="p-2 text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+                            title="Export as HTML"
+                        >
+                            <Download className="w-4 h-4" />
+                        </button>
+                        <button
+                            onClick={onExportPdf}
+                            className="p-2 text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-all border-l border-black/5 dark:border-white/5"
+                            title="Export as PDF"
+                        >
+                            <FileText className="w-4 h-4" />
+                        </button>
+                    </div>
 
-                {setIsSyncScroll && (
-                    <button
-                        onClick={() => setIsSyncScroll(!isSyncScroll)}
-                        className={cn(
-                            "relative p-2 rounded-md transition-all duration-200",
-                            isSyncScroll
-                                ? "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90"
-                                : "text-muted-foreground hover:bg-accent hover:text-foreground"
-                        )}
-                        title={isSyncScroll ? "Sync Scrolling On" : "Sync Scrolling Off"}
-                    >
-                        <LinkIcon className="h-4 w-4" />
-                        <span className="sr-only">Toggle Sync Scroll</span>
-                    </button>
-                )}
+                    {setIsSyncScroll && (
+                        <button
+                            onClick={() => setIsSyncScroll(!isSyncScroll)}
+                            className={cn(
+                                "p-2 rounded-xl transition-all border",
+                                isSyncScroll
+                                    ? "bg-primary/10 text-primary border-primary/20"
+                                    : "text-muted-foreground hover:bg-muted bg-muted/30 border-black/5 dark:border-white/5 dark:bg-white/5 dark:hover:bg-white/10"
+                            )}
+                            title={isSyncScroll ? "Sync Scroll On" : "Sync Scroll Off"}
+                        >
+                            <LinkIcon className="h-4 w-4" />
+                        </button>
+                    )}
 
-                <div className="h-4 w-px bg-border mx-1" />
-
-                <div className="flex bg-muted rounded-md p-1 h-[28px] items-center">
-                    <button
-                        onClick={() => setTheme("light")}
-                        className={cn(
-                            "p-1 rounded-sm transition-all text-xs flex items-center justify-center w-7 h-5",
-                            theme === "light" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
-                        )}
-                        title="Light Mode"
-                    >
-                        <Sun className="h-3.5 w-3.5" />
-                        <span className="sr-only">Light</span>
-                    </button>
-                    <button
-                        onClick={() => setTheme("dark")}
-                        className={cn(
-                            "p-1 rounded-sm transition-all text-xs flex items-center justify-center w-7 h-5",
-                            theme === "dark" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
-                        )}
-                        title="Dark Mode"
-                    >
-                        <Moon className="h-3.5 w-3.5" />
-                        <span className="sr-only">Dark</span>
-                    </button>
+                    <div className="flex items-center bg-muted/50 dark:bg-white/5 rounded-xl border border-black/5 dark:border-white/5 p-1 gap-1">
+                        <button
+                            onClick={() => setTheme("light")}
+                            className={cn(
+                                "p-2 rounded-lg transition-all duration-300 active:scale-90",
+                                theme === "light" 
+                                    ? "bg-white text-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.2)] border border-black/5" 
+                                    : "text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5"
+                            )}
+                            title="Light Mode"
+                        >
+                            <Sun className="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                            onClick={() => setTheme("dark")}
+                            className={cn(
+                                "p-2 rounded-lg transition-all duration-300 active:scale-90",
+                                theme === "dark" 
+                                    ? "bg-primary text-white shadow-[0_0_20px_rgba(139,92,246,0.4)]" 
+                                    : "text-muted-foreground hover:text-white hover:bg-white/5"
+                            )}
+                            title="Dark Mode"
+                        >
+                            <Moon className="h-3.5 w-3.5" />
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -148,8 +148,10 @@ function ViewToggle({
         <button
             onClick={onClick}
             className={cn(
-                "px-3 py-1 text-xs font-medium rounded-sm transition-all flex items-center gap-1.5",
-                active ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                "px-4 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg transition-all flex items-center gap-2 active:scale-95",
+                active 
+                    ? "bg-primary/10 text-primary dark:bg-white/10 dark:text-white shadow-sm" 
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted dark:hover:text-white dark:hover:bg-white/5"
             )}
         >
             <Icon className="w-3.5 h-3.5" />

@@ -70,7 +70,7 @@ const MarkdownPreview = memo(function MarkdownPreview({ content, onToggleTask }:
     let checkboxIndex = 0;
 
     return (
-        <div className="prose prose-sm dark:prose-invert max-w-none w-full break-words">
+        <div className="prose prose-sm dark:prose-invert max-w-none w-full break-words prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary prose-pre:bg-white/5 prose-pre:backdrop-blur-sm prose-pre:border prose-pre:border-white/10 prose-pre:rounded-xl">
             <ReactMarkdown
                 remarkPlugins={[remarkGfm, remarkMath, remarkGemoji, remarkGithubBlockquoteAlert]}
                 rehypePlugins={[rehypeHighlight, rehypeKatex]}
