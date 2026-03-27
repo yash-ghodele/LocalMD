@@ -138,21 +138,28 @@ export function useFileHandler(initialContent: string) {
         e.preventDefault();
         const items = Array.from(e.dataTransfer.items);
 
+        if (items.length === 0) return;
+
         // Check for File System Access API support in DataTransferItem
         const item = items[0];
         if (item.kind === "file") {
-            const entry = (item as any).getAsFileSystemHandle?.(); // Experimental
+            try {
+                // getAsFileSystemHandle returns a Promise!
+                const entry = await (item as any).getAsFileSystemHandle?.(); 
 
-            if (entry && entry instanceof FileSystemFileHandle && entry.name.endsWith(".md")) {
-                const file = await entry.getFile();
-                const text = await file.text();
-                setState({
-                    content: text,
-                    fileHandle: entry,
-                    fileName: file.name,
-                    isModified: false,
-                });
-                return;
+                if (entry && (entry.kind === "file") && (entry.name.endsWith(".md") || entry.name.endsWith(".markdown") || entry.name.endsWith(".txt"))) {
+                    const file = await (entry as FileSystemFileHandle).getFile();
+                    const text = await file.text();
+                    setState({
+                        content: text,
+                        fileHandle: entry as FileSystemFileHandle,
+                        fileName: file.name,
+                        isModified: false,
+                    });
+                    return;
+                }
+            } catch (err) {
+                console.warn("Experimental getAsFileSystemHandle failed, falling back to standard API:", err);
             }
 
             // Standard file (fallback or non-FS access)
