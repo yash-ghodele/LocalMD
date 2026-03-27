@@ -32,6 +32,17 @@ A fast, secure, and privacy-focused local-first Markdown viewer and editor built
 - **⚡ Offline-First**: PWA support with service worker caching
 - **🚀 Fast Loading**: Optimized bundle with code splitting
 
+## 📖 Documentation
+
+For in-depth details about the project, please refer to our comprehensive documentation:
+
+-   **[🚀 Overview](doc/overview.md)**: Project mission, goals, and core philosophy.
+-   **[🏗️ Tech Stack](doc/tech-stack.md)**: Detailed breakdown of the modern Next.js 16 + Tailwind 4 architecture.
+-   **[✨ Feature Guide](doc/features.md)**: Deep dive into premium features like Glassmorphism, Math, and Diagrams.
+-   **[🧩 Project Architecture](doc/architecture.md)**: Folder structure, component mappings, and rendering pipeline.
+-   **[🔌 API & Implementation](doc/api-reference.md)**: Technical guide for the File System Access API and custom hooks.
+-   **[⌨️ User Guide](doc/user-guide.md)**: Master the keyboard shortcuts and productivity features.
+
 ## 🚀 Quick Start
 
 ### Prerequisites
