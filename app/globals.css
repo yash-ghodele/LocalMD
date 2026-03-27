@@ -150,9 +150,21 @@
 }
 
 /* Force high contrast for prose in dark mode */
-.dark .prose h1, .dark .prose h2, .dark .prose h3, .dark .prose h4 {
+.dark .prose h1, .dark .prose h2, .dark .prose h3, .dark .prose h4, .dark .prose h5, .dark .prose h6 {
   color: #ffffff !important;
 }
-.dark .prose p, .dark .prose li, .dark .prose strong {
+.dark .prose p, .dark .prose li, .dark .prose strong, .dark .prose blockquote {
   color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Syntax highlighting comments visibility in dark mode */
+.dark .hljs-comment, 
+.dark .hljs-quote {
+  color: rgba(255, 255, 255, 0.45) !important;
+  font-style: italic;
+}
+
+/* Ensure math and other blocks are also visible */
+.dark .katex {
+  color: #ffffff !important;
 }
