@@ -45,11 +45,12 @@ graph TD
 
 ### 🧪 Mathematical Expressions
 The Schrödinger equation:
-$$i\hbar\frac{\partial}{\partial t}\Psi(\mathbf{r},t) = \hat{H}\Psi(\mathbf{r},t)$$
+$$\\psi(r, t) = A e^{i(k \\cdot r - \\omega t)}$$
+$$i\\hbar\\frac{\\partial}{\\partial t}\\Psi(\\mathbf{r},t) = \\hat{H}\\Psi(\\mathbf{r},t)$$
 
 ### 🔔 GitHub-Style Alerts
 > [!TIP]
-> Use **Drag & Drop** to open any \`.md\` file instantly!
+> Use **Drag & Drop** to open any \".md\" file instantly!
 
 > [!IMPORTANT]
 > This app works entirely in your browser. Your data never leaves your machine.

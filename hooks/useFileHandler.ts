@@ -20,8 +20,18 @@ export function useFileHandler(initialContent: string) {
             if (saved) {
                 try {
                     const parsed = JSON.parse(saved);
+                    let content = parsed.content || initialContent;
+
+                    // Self-healing: Detect broken math syntax from previous unescaped versions
+                    // If it contains "ihbar" or "Psi(" or the form feed character from broken \frac
+                    const isCorrupted = content.includes("ihbar") || content.includes("Psi(") || content.includes("\u000c");
+                    if (isCorrupted && content.includes("# 🚀 Welcome")) {
+                        console.log("Self-healing: Detected corrupted Welcome Guide, resetting to latest version.");
+                        content = initialContent;
+                    }
+
                     return {
-                        content: parsed.content || initialContent,
+                        content: content,
                         fileHandle: null,
                         fileName: parsed.fileName || "Untitled.md",
                         isModified: false,
