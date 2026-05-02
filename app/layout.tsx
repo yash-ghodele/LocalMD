@@ -14,22 +14,24 @@ export const metadata: Metadata = {
     default: "LocalMD | Premium Local-First Markdown Architecture",
     template: "%s | LocalMD"
   },
-  description: "A state-of-the-art, privacy-focused Markdown editor with PDF/PPTX transformation, Mermaid diagrams, and LaTeX support. All processing happens 100% locally.",
+  description: "Transform PDFs, Word documents, and PPTs into Markdown instantly. A state-of-the-art, privacy-focused editor with Mermaid diagrams, LaTeX, and local-first architecture.",
   keywords: [
-    "Markdown Editor", "Privacy-first Markdown", "Local-first Apps", 
-    "PDF to Markdown", "PPTX to Markdown", "Mermaid Diagrams", 
-    "LaTeX Editor", "PWA Markdown", "LocalMD", "Next.js Editor"
+    "Markdown Editor", "Privacy-first Markdown", "Local-first Apps",
+    "PDF to Markdown", "Word to Markdown", "PPTX to Markdown",
+    "Docx to Markdown", "Mermaid Diagrams", "LaTeX Editor",
+    "PWA Markdown", "LocalMD", "Next.js Editor"
   ],
   authors: [{ name: "Yash Ghodele", url: "https://yash-ghodele.pages.dev" }],
   creator: "Yash Ghodele",
-  metadataBase: new URL("https://yash-ghodele.pages.dev/LocalMD"),
+  category: "technology",
+  metadataBase: new URL("https://yash-ghodele.pages.dev/projects/LocalMD"),
 
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://yash-ghodele.pages.dev/LocalMD",
     title: "LocalMD | Premium Local-First Markdown Architecture",
-    description: "Transform PDFs and PPTs into Markdown instantly. Private, fast, and local-first.",
+    description: "Transform PDFs, Word, and PPTs into Markdown instantly. Private, fast, and 100% local-first.",
     siteName: "LocalMD",
     images: [{
       url: "/og-image.png",

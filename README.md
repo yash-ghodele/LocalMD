@@ -36,23 +36,19 @@ A state-of-the-art, privacy-focused local-first Markdown editor and transformati
 
 ---
 
-## ⌨️ Keyboard Shortcuts
+### ⌨️ Global Keyboard Shortcuts
 
 | Shortcut | Action |
 | :--- | :--- |
-| `Ctrl + O` | Open a local file (Markdown, PDF, PPTX) |
+| `Ctrl + O` | Open a local file (Markdown, PDF, DOCX, PPTX) |
 | `Ctrl + S` | Save current file (Save As for untitled docs) |
-| `Ctrl + Z` | **Undo** last edit |
-| `Ctrl + Y` | **Redo** last edit |
+| `Ctrl + Z / Y` | **Undo / Redo** last edit |
 | `Ctrl + M` | Export as Markdown file |
 | `Ctrl + E` | Export as standalone HTML |
 | `Ctrl + P` | Print / Export as PDF |
 | `Ctrl + /` | Toggle Split/Editor/Preview View |
 | `Ctrl + D` | Toggle Dark/Light Theme |
 
-| `Ctrl + P` | Export as PDF / open print dialog |
-| `Ctrl + /` | Cycle view modes: Split → Editor → Preview |
-| `Ctrl + D` | Toggle Light / Dark theme |
 
 ---
 

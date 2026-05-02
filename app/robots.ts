@@ -6,7 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: 'https://yash-ghodele.pages.dev/LocalMD/sitemap.xml',
+    sitemap: 'https://localmd.vercel.app/sitemap.xml',
   }
 }
-
