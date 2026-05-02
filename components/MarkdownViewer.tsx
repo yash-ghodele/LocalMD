@@ -342,10 +342,7 @@ export default function MarkdownViewer() {
                 />
             </div>
 
-            <main
-                ref={mainRef}
-                className="flex-1 flex overflow-hidden relative p-4 gap-4 print:p-0 print:block"
-            >
+            <main ref={mainRef} className="flex-1 flex flex-col md:flex-row gap-2 md:gap-4 p-2 md:p-4 overflow-hidden relative">
                 {/* Drag Overlay */}
                 {isDragging && (
                     <div className="absolute inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center m-4 rounded-xl border-2 border-primary border-dashed animate-pulse print:hidden pointer-events-none">
@@ -381,10 +378,12 @@ export default function MarkdownViewer() {
                     className={cn(
                         "flex flex-col min-w-0 glass rounded-2xl overflow-hidden transition-all duration-500 print:hidden shadow-2xl",
                         viewMode === "preview" ? "hidden" : "flex",
+                        // On mobile, hide if not in editor mode
+                        "max-md:flex-1",
                         isResizing ? "transition-none" : ""
                     )}
                     style={{
-                        flex: viewMode === "split" ? `0 0 ${splitPosition}%` : "1 1 0%"
+                        flex: (viewMode === "split" && typeof window !== 'undefined' && window.innerWidth > 768) ? `0 0 ${splitPosition}%` : "1 1 0%"
                     }}
                 >
                     <EditorToolbar 
@@ -399,18 +398,18 @@ export default function MarkdownViewer() {
                         onScroll={handleEditorScroll}
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
-                        className="flex-1 w-full h-full p-8 resize-none bg-transparent font-mono text-sm leading-relaxed focus:outline-none focus:ring-0 placeholder:text-muted-foreground/30 text-foreground/90 selection:bg-primary/40 custom-scrollbar"
+                        className="flex-1 w-full h-full p-4 md:p-8 resize-none bg-transparent font-mono text-sm leading-relaxed focus:outline-none focus:ring-0 placeholder:text-muted-foreground/30 text-foreground/90 selection:bg-primary/40 custom-scrollbar"
                         placeholder="Ignite your creativity..."
                         spellCheck={false}
                     />
                 </div>
 
-                {/* Draggable Divider */}
+                {/* Draggable Divider - Hidden on Mobile */}
                 {viewMode === "split" && (
                     <div
                         onMouseDown={handleMouseDown}
                         className={cn(
-                            "w-1.5 h-1/2 self-center cursor-col-resize transition-all z-30 group print:hidden rounded-full flex items-center justify-center",
+                            "hidden md:flex w-1.5 h-1/2 self-center cursor-col-resize transition-all z-30 group print:hidden rounded-full items-center justify-center",
                             isResizing 
                                 ? "bg-primary scale-y-110 shadow-[0_0_20px_rgba(139,92,246,0.6)]" 
                                 : "bg-black/20 dark:bg-white/40 hover:bg-primary/60 dark:shadow-[0_0_10px_rgba(139,92,246,0.1)]"
@@ -430,24 +429,49 @@ export default function MarkdownViewer() {
                     className={cn(
                         "flex flex-col min-w-0 glass rounded-2xl overflow-hidden transition-all duration-500 shadow-2xl print:bg-white print:overflow-visible print:block",
                         viewMode === "editor" ? "hidden" : "flex",
+                        "max-md:flex-1",
                         isResizing ? "transition-none" : ""
                     )}
                     style={{
-                        flex: viewMode === "split" ? `0 0 ${100 - splitPosition}%` : "1 1 0%"
+                        flex: (viewMode === "split" && typeof window !== 'undefined' && window.innerWidth > 768) ? `0 0 ${100 - splitPosition}%` : "1 1 0%"
                     }}
                 >
                     <div
                         ref={previewContainerRef}
                         onScroll={handlePreviewScroll}
-                        className="h-full w-full overflow-auto p-10 print:p-0 print:overflow-visible custom-scrollbar"
+                        className="h-full w-full overflow-auto p-6 md:p-10 print:p-0 print:overflow-visible custom-scrollbar"
                     >
                         <MarkdownPreview content={content} onToggleTask={handleToggleTask} />
                     </div>
                 </div>
             </main>
 
+            {/* Mobile Navigation */}
+            <div className="md:hidden flex items-center justify-around p-3 bg-white/5 backdrop-blur-xl border-t border-white/10 z-50">
+                <button 
+                    onClick={() => setViewMode("editor")}
+                    className={cn(
+                        "flex flex-col items-center gap-1 transition-all",
+                        viewMode === "editor" || viewMode === "split" ? "text-primary scale-110" : "text-muted-foreground opacity-50"
+                    )}
+                >
+                    <div className="text-[10px] font-bold uppercase tracking-tighter">Editor</div>
+                </button>
+                <button 
+                    onClick={() => setViewMode("preview")}
+                    className={cn(
+                        "flex flex-col items-center gap-1 transition-all",
+                        viewMode === "preview" ? "text-primary scale-110" : "text-muted-foreground opacity-50"
+                    )}
+                >
+                    <div className="text-[10px] font-bold uppercase tracking-tighter">Preview</div>
+                </button>
+            </div>
+
             {/* Table of Contents */}
-            <TableOfContents content={content} />
+            <div className="hidden md:block">
+                <TableOfContents content={content} />
+            </div>
         </div>
     );
 }

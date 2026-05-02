@@ -117,15 +117,10 @@ export function EditorToolbar({ onInsert, onUndo, onRedo, canUndo, canRedo }: Ed
     ];
 
     return (
-        <div className="flex items-center gap-1.5 px-6 py-3 border-b border-white/10 bg-white/5 backdrop-blur-md flex-wrap print:hidden">
+        <div className="flex items-center gap-1 p-2 border-b border-white/5 bg-white/5 overflow-x-auto no-scrollbar flex-nowrap print:hidden">
             {buttons.map((button, idx) => {
                 if ("divider" in button && button.divider) {
-                    return (
-                        <div
-                            key={`divider-${idx}`}
-                            className="w-px h-4 bg-white/10 mx-1.5"
-                        />
-                    );
+                    return <div key={idx} className="w-px h-4 bg-white/10 mx-1 flex-shrink-0" />;
                 }
 
                 const Icon = button.icon!;
@@ -134,7 +129,7 @@ export function EditorToolbar({ onInsert, onUndo, onRedo, canUndo, canRedo }: Ed
                         key={idx}
                         onClick={button.action}
                         disabled={button.disabled}
-                        className="p-1.5 hover:bg-white/10 text-muted-foreground hover:text-white rounded-lg transition-all active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                        className="p-1.5 hover:bg-white/10 text-muted-foreground hover:text-white rounded-lg transition-all active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent flex-shrink-0"
                         title={button.label}
                         type="button"
                     >
