@@ -2,17 +2,20 @@
 
 Maximize your productivity with the Local Markdown Viewer.
 
-## 🎹 Keyboard Shortcuts
+## ⌨️ Global Keyboard Shortcuts
 
 | Shortcut | Action |
 | :--- | :--- |
-| `Ctrl + O` | Open a local Markdown file |
-| `Ctrl + S` | Save to current file (triggers Save As for untitled docs) |
-| `Ctrl + Shift + S` | Save As — pick a new file destination |
-| `Ctrl + E` | Export as standalone portable HTML |
-| `Ctrl + P` | Export as PDF / open browser print dialog |
-| `Ctrl + /` | Cycle view modes: Split → Editor Only → Preview Only |
+| `Ctrl + O` | Open a local file (Markdown, PDF, PPTX) |
+| `Ctrl + S` | Save current file (Save As for untitled docs) |
+| `Ctrl + Z` | **Undo** last edit (Tracks history across edits) |
+| `Ctrl + Y` | **Redo** last edit |
+| `Ctrl + M` | Export as Markdown file |
+| `Ctrl + E` | Export as standalone HTML |
+| `Ctrl + P` | Print / Export as PDF (Clean layout) |
+| `Ctrl + /` | Cycle view modes: Split → Editor → Preview |
 | `Ctrl + D` | Toggle Light / Dark theme |
+
 
 > **Tip:** On macOS, use `Cmd` instead of `Ctrl` for all shortcuts.
 

@@ -1,6 +1,6 @@
-# Local Markdown Viewer
+# LocalMD | Premium Local-First Markdown Architecture
 
-A fast, secure, and privacy-focused local-first Markdown viewer and editor built with Next.js. All your data stays on your device — no servers, no tracking, no cloud storage.
+A state-of-the-art, privacy-focused local-first Markdown editor and transformation engine built with Next.js 16. All your data stays on your device — no servers, no tracking, no cloud storage.
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Next.js](https://img.shields.io/badge/Next.js-16-black)
@@ -8,84 +8,30 @@ A fast, secure, and privacy-focused local-first Markdown viewer and editor built
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8)
 
-## ✨ Features
+## ✨ Premium Features
 
-### Core Functionality
-- **📝 Split-Screen Editor**: Edit Markdown on the left, see live preview on the right
-- **↔️ Resizable Partition**: Drag the vertical divider to customize your workspace layout (15–85% range)
-- **🎨 GitHub-Flavored Markdown**: Full support for tables, task lists, and [GitHub alerts](https://github.com/orgs/community/discussions/16925)
-- **📐 LaTeX & Math**: Beautiful math formulas rendered with `remark-math` + `KaTeX`
-- **📊 Mermaid Diagrams**: Flowcharts, sequence diagrams, and more — theme-aware and live
-- **🎯 Syntax Highlighting**: Beautiful code blocks with `rehype-highlight` (GitHub Dark theme)
-- **📋 Copy Code Button**: One-click copy on hover for every code block
-- **✅ Interactive Tasks**: Click task checkboxes in the preview — they update the source Markdown live
-- **🌓 Dark/Light Mode**: System-aware theme with manual toggle (Light / Dark)
-- **📑 Table of Contents**: Auto-generated floating TOC panel from your headings
-- **📊 Live Stats**: Real-time word count and character count in the status bar
+### 🚀 Advanced Document Transformation
+- **📄 PDF to Markdown**: High-fidelity text extraction with intelligent heading detection and structural preservation.
+- **📊 PPTX to Markdown**: Transform PowerPoint presentations into structured Markdown slides instantly.
+- **🔄 Smart Drag & Drop**: Drop any `.md`, `.pdf`, or `.pptx` file directly onto the window for instant conversion.
 
-### File Management
-- **📂 Open File**: Native file picker via the File System Access API (Chrome/Edge) with fallback `<input>` for all browsers
-- **💾 Save File**: Write changes back to the original file directly — no re-download needed
-- **💾 Save As**: Choose a new destination for any document, including unsaved drafts
-- **🔄 Drag & Drop**: Drop any `.md`, `.markdown`, or `.txt` file directly onto the window
-- **🕐 Auto-Save**: Content is debounce-saved to `localStorage` every 2 seconds — you never lose a draft
-- **🔧 Self-Healing**: Automatically resets a corrupted Welcome Guide from older app versions
+### 📝 Editor & Architecture
+- **⏱️ Undo/Redo History**: Robust programmatic history engine — never lose an edit, even after complex toolbar transformations.
+- **📝 Split-Screen Editor**: Edit Markdown on the left, see live preview on the right with **Sync-Scroll**.
+- **🎨 Liquid Glassmorphism**: Stunning, high-performance UI with premium blurring, gradients, and interactive animations.
+- **📑 Table of Contents**: Auto-generated floating TOC panel for instant document navigation.
+- **✅ Interactive Tasks**: Click task checkboxes in the preview — they update the source Markdown live.
 
-### Editor Toolbar
-Insert common Markdown syntax with one click: **Bold**, *Italic*, ~~Strikethrough~~, `Code`, H1, H2, lists, task lists, blockquotes, links, images, and tables.
+### 📊 Rendering Engine
+- **📐 LaTeX & Math**: Professional math formulas rendered with `KaTeX`.
+- **📊 Mermaid Diagrams**: Flowcharts, sequence diagrams, and more — live and theme-aware.
+- **📋 Premium Tables**: Glass-style tables with striped rows, hover highlights, and rounded architecture.
+- **🎯 Syntax Highlighting**: Beautiful code blocks with GitHub Dark theme and hover-copy support.
 
-### Export Options
-- **📄 Export to HTML**: Standalone self-contained HTML file with embedded GitHub-style CSS
-- **🖨️ Export to PDF**: Clean print-optimized layout via the browser print dialog (glassmorphism removed for clean output)
-
-### Privacy & Performance
-- **🔒 100% Local**: No analytics, no external requests, no data collection
-- **⚡ Offline-First**: PWA support with service worker caching
-- **🚀 Fast Loading**: Optimized production bundle with code splitting and dynamic imports
-
----
-
-## 📖 Documentation
-
-| Doc | Description |
-|-----|-------------|
-| [🧬 Brand DNA](doc/dna.md) | Core mission, identity, and target audience persona |
-| [🚀 Overview](doc/overview.md) | Project goals and core philosophy |
-| [🏗️ Tech Stack](doc/tech-stack.md) | Breakdown of the Next.js 16 + Tailwind v4 architecture |
-| [✨ Features](doc/features.md) | Deep dive into all premium features |
-| [🧩 Architecture](doc/architecture.md) | Component map, hooks, and rendering pipeline |
-| [🔌 API Reference](doc/api-reference.md) | File System Access API, hooks, and design tokens |
-| [⌨️ User Guide](doc/user-guide.md) | Keyboard shortcuts and power interactions |
-
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Node.js 18+ and npm
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/yash-ghodele/markdown-viewer.git
-cd markdown-viewer
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### Production Build
-
-```bash
-npm run build
-npm start
-```
+### 🔒 Privacy & Performance
+- **🔐 100% Local**: All processing happens in-browser. No analytics, no data collection.
+- **⚡ Offline-First**: PWA support with local storage sync and service worker caching.
+- **💾 Native File System**: Direct read/write access via the File System Access API.
 
 ---
 
@@ -93,10 +39,16 @@ npm start
 
 | Shortcut | Action |
 | :--- | :--- |
-| `Ctrl + O` | Open a local Markdown file |
-| `Ctrl + S` | Save to current file (Save As for untitled docs) |
-| `Ctrl + Shift + S` | Save As — choose a new destination |
+| `Ctrl + O` | Open a local file (Markdown, PDF, PPTX) |
+| `Ctrl + S` | Save current file (Save As for untitled docs) |
+| `Ctrl + Z` | **Undo** last edit |
+| `Ctrl + Y` | **Redo** last edit |
+| `Ctrl + M` | Export as Markdown file |
 | `Ctrl + E` | Export as standalone HTML |
+| `Ctrl + P` | Print / Export as PDF |
+| `Ctrl + /` | Toggle Split/Editor/Preview View |
+| `Ctrl + D` | Toggle Dark/Light Theme |
+
 | `Ctrl + P` | Export as PDF / open print dialog |
 | `Ctrl + /` | Cycle view modes: Split → Editor → Preview |
 | `Ctrl + D` | Toggle Light / Dark theme |
