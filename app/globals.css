@@ -48,6 +48,21 @@
     --logo-from: #1e1b4b;
     --logo-to: #4338ca;
   }
+ 
+  .task-list-item-checkbox {
+    @apply appearance-none w-4 h-4 rounded border border-white/20 bg-white/5 cursor-pointer transition-all relative mt-1 mr-2 flex-shrink-0;
+  }
+  .task-list-item-checkbox:checked {
+    @apply bg-primary border-primary shadow-[0_0_10px_rgba(139,92,246,0.3)];
+  }
+  .task-list-item-checkbox:checked::after {
+    content: '';
+    @apply absolute left-[5px] top-[2px] w-[5px] h-[9px] border-white border-r-2 border-b-2 rotate-45;
+  }
+  .dark .task-list-item-checkbox {
+    @apply bg-white/10 border-white/10;
+  }
+
 
   .dark {
     --background: 240 10% 3.9%;
@@ -181,6 +196,105 @@
   color: var(--primary) !important;
   background: rgba(255, 255, 255, 0.05) !important;
 }
+
+/* Premium Glass Tables */
+.prose table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.prose th {
+  background: rgba(0, 0, 0, 0.03);
+  padding: 1rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+.dark .prose th {
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.prose td {
+  padding: 0.75rem 1rem !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+.dark .prose td {
+  border-bottom-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.prose tr:last-child td {
+  border-bottom: none !important;
+}
+
+.prose tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.dark .prose tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.prose tr:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.dark .prose tr:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* Task List Fixes */
+.prose .task-list-item {
+  @apply list-none flex items-start !pl-0;
+}
+
+.prose .task-list-item input {
+  @apply !mt-1;
+}
+
+/* Custom Premium Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.5);
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.light .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+
+
 
 /* ============================================================
    Light mode prose — pin dark text so glassmorphism backdrop

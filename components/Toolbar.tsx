@@ -2,13 +2,15 @@
 
 import React from "react";
 import Image from "next/image";
-import { Moon, Sun, FileText, Columns, Eye, Download, FileUp, Save, Link as LinkIcon } from "lucide-react";
+import { Moon, Sun, FileText, Columns, Eye, Download, FileUp, Save, Link as LinkIcon, FilePlus, Loader2, FileDown } from "lucide-react";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
 interface ToolbarProps {
     onOpenFile: () => void;
+    onImportFile: () => void;
     onSaveFile: () => void;
+    onExportMarkdown: () => void;
     onExportHtml: () => void;
     onExportPdf: () => void;
     viewMode: "split" | "editor" | "preview";
@@ -17,11 +19,14 @@ interface ToolbarProps {
     setIsSyncScroll?: (isSync: boolean) => void;
     isModified?: boolean;
     hasFileHandle?: boolean;
+    isImporting?: boolean;
 }
 
 export function Toolbar({
     onOpenFile,
+    onImportFile,
     onSaveFile,
+    onExportMarkdown,
     onExportHtml,
     onExportPdf,
     viewMode,
@@ -30,6 +35,7 @@ export function Toolbar({
     setIsSyncScroll,
     isModified,
     hasFileHandle,
+    isImporting,
 }: ToolbarProps) {
     const { theme, setTheme } = useTheme();
 
@@ -44,11 +50,26 @@ export function Toolbar({
                 <div className="flex items-center gap-2">
                     <button
                         onClick={onOpenFile}
-                        className="flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl bg-primary text-primary-foreground hover:shadow-lg hover:shadow-primary/40 transition-all active:scale-95"
+                        disabled={isImporting}
+                        className="flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl bg-primary text-primary-foreground hover:shadow-lg hover:shadow-primary/40 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                         title="Open File (Ctrl+O)"
                     >
                         <FileUp className="w-3.5 h-3.5" />
                         <span className="hidden sm:inline">Open</span>
+                    </button>
+
+                    <button
+                        onClick={onImportFile}
+                        disabled={isImporting}
+                        className="flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                        title="Import PDF/PPTX"
+                    >
+                        {isImporting ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                            <FilePlus className="w-3.5 h-3.5" />
+                        )}
+                        <span className="hidden sm:inline">{isImporting ? "Importing..." : "Import"}</span>
                     </button>
 
                     {/* Save button — shown only when there is content to save */}
@@ -93,8 +114,15 @@ export function Toolbar({
                 <div className="flex items-center gap-2">
                     <div className="flex items-center bg-muted/50 dark:bg-white/5 rounded-xl border border-black/5 dark:border-white/5 overflow-hidden">
                         <button
-                            onClick={onExportHtml}
+                            onClick={onExportMarkdown}
                             className="p-2 text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+                            title="Export as Markdown"
+                        >
+                            <FileDown className="w-4 h-4" />
+                        </button>
+                        <button
+                            onClick={onExportHtml}
+                            className="p-2 text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-all border-l border-black/5 dark:border-white/10"
                             title="Export as HTML"
                         >
                             <Download className="w-4 h-4" />
