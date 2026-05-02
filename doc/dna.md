@@ -9,11 +9,16 @@ This document outlines the core architecture, product philosophy, and strategic 
 
 LocalMD is a paradigm shift in digital productivity. It is founded on the principle that high-performance technical writing and absolute data sovereignty should coexist. In an era where cloud-dependency is synonymous with data risk, LocalMD offers a "Local-First" sanctuary for high-value intellectual property.
 
+**The Infinite History Guarantee.**
+Through a robust 50-state programmatic history engine, LocalMD ensures that "exploration is safe." Users can pivot, experiment, and transform documents with the absolute confidence of a persistent Undo/Redo stack.
+
+
 ### 🚀 The Mission
 To provide a professional-grade Markdown environment that eliminates the compromise between the seamless interactivity of modern web apps and the security of local file systems.
 
 ### ✨ The Competitive Edge
 - **Liquid Glassmorphism**: A curated, high-fidelity design system that minimizes cognitive load and provides a premium, immersive writing experience.
+- **The Transformation Hub**: Instant, local-first conversion of PDF, Word (.docx), and PowerPoint (.pptx) documents into structured, semantic Markdown.
 - **Direct-to-Disk Connectivity**: Leveraging the Native File System Access API to provide a true "desktop-native" feel within the browser, enabling seamless read/write operations without intermediary server steps.
 - **Security by Architecture**: By eliminating the backend, LocalMD inherently solves the problem of data privacy. There is no server to hack, no database to leak, and no tracking to bypass.
 
@@ -26,6 +31,7 @@ LocalMD is a **High-Performance PWA (Progressive Web App)** designed for mission
 
 - **Zero Infrastructure Overhead**: A purely client-side architecture means zero server costs, zero database maintenance, and instant scalability.
 - **Offline Sovereignty**: Built with an offline-first service worker architecture, ensuring the tool is available 24/7, regardless of network conditions.
+- **Cross-Surface Continuity**: A mobile-responsive stacking architecture with a dedicated navigation bar, enabling a high-fidelity editing experience from desktop to smartphone.
 - **High-Fidelity Rendering**: Integrated support for the most demanding technical standards, including Mermaid.js for architecture and KaTeX for precision mathematical typesetting.
 
 ---
