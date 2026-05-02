@@ -14,61 +14,70 @@ import html from "remark-html";
 const MarkdownPreview = dynamic(() => import("./MarkdownPreview"), { ssr: false });
 const TableOfContents = dynamic(() => import("./TableOfContents").then(mod => ({ default: mod.TableOfContents })), { ssr: false });
 
-const WELCOME_MD = `# 🚀 Welcome to Local MD
+const WELCOME_MD = `# 🚀 Local MD: The Future of Markdown Editing
 
-Experience the ultimate **Liquid Glassmorphism** Markdown editor. Fully offline, private, and premium.
+Experience a state-of-the-art **Liquid Glassmorphism** editor designed for privacy, performance, and professional documentation.
 
-## ⌨️ Productivity Shortcuts
+## 📥 Smart Document Imports
+Transform your existing assets into clean Markdown instantly.
+- **PDF Transformation**: Drag and drop any PDF to extract structured text with heading detection.
+- **PPTX Integration**: Import PowerPoint slides; titles and structure are automatically preserved.
+- **Drag & Drop**: Simply drop any \`.md\`, \`.pdf\`, or \`.pptx\` file anywhere on the workspace.
+
+---
+
+## ⌨️ Productivity Command Center
 
 | Action | Shortcut |
 | :--- | :--- |
-| **Open File** | \`Ctrl + O\` |
-| **Save File** | \`Ctrl + S\` |
-| **Save As** | \`Ctrl + Shift + S\` |
+| **Open Local File** | \`Ctrl + O\` |
+| **Save Changes** | \`Ctrl + S\` |
+| **Save As / New File** | \`Ctrl + Shift + S\` |
+| **Export Markdown** | \`Ctrl + M\` |
 | **Export HTML** | \`Ctrl + E\` |
-| **Print / PDF** | \`Ctrl + P\` |
-| **Toggle View** | \`Ctrl + /\` |
-| **Toggle Theme** | \`Ctrl + D\` |
+| **Print / PDF Export** | \`Ctrl + P\` |
+| **Toggle View Layout** | \`Ctrl + /\` |
+| **Switch Visual Theme** | \`Ctrl + D\` |
 
 ---
 
-## ✨ Premium Features
+## ✨ Advanced Rendering Suite
 
-### 📊 Mermaid Diagrams
+### 📊 Engineering Diagrams (Mermaid)
 \`\`\`mermaid
-graph TD
-    A[Write Markdown] --> B{Choose Theme}
-    B -->|Dark| C[Liquid Night]
-    B -->|Light| D[Frozen Day]
-    C --> E[Export PDF]
-    D --> E
+graph LR
+    A[PDF/PPTX] -->|Import| B(Local MD)
+    B -->|Refine| C{Export}
+    C -->|Static| D[HTML]
+    C -->|Vector| E[PDF]
+    C -->|Source| F[Markdown]
 \`\`\`
 
-### 🧪 Mathematical Expressions
-The Schrödinger equation:
-$$\\psi(r, t) = A e^{i(k \\cdot r - \\omega t)}$$
-$$i\\hbar\\frac{\\partial}{\\partial t}\\Psi(\\mathbf{r},t) = \\hat{H}\\Psi(\\mathbf{r},t)$$
+### 🧪 Scientific LaTeX Support
+Quantum Field Theory (Schrödinger Equation):
+$$i\\hbar\\frac{\\partial}{\\partial t}\\Psi(\\mathbf{r},t) = \\left [ -\\frac{\\hbar^2}{2m}\\nabla^2 + V(\\mathbf{r},t) \\right ]\\Psi(\\mathbf{r},t)$$
 
-### 🔔 GitHub-Style Alerts
-> [!TIP]
-> Use **Drag & Drop** to open any \".md\" file instantly!
-
+### 🛡️ Privacy & Security
 > [!IMPORTANT]
-> This app works entirely in your browser. Your data never leaves your machine.
+> **Zero-Cloud Architecture**: Your data is never uploaded to a server. All document processing (PDF parsing, PPTX unzipping, and Markdown rendering) happens 100% locally in your browser memory.
 
 ---
 
-### ✅ Interactive Tasks
-- [x] High-fidelity UI Overhaul
-- [x] Theme-aware Splitter
-- [ ] Write my next masterpiece
+### ✅ Project Readiness
+- [x] High-fidelity Liquid UI
+- [x] PDF & PPTX Transformation Engine
+- [x] Offline-First PWA Support
+- [ ] Create my first masterpiece
 
----
-*Start editing this file to see the liquid magic happen in real-time!*
+*Delete this text and start writing to ignite your creativity.*
 `;
 
 export default function MarkdownViewer() {
-    const { content, fileName, isModified, fileHandle, setContent, openFile, saveFile, saveFileAs, handleDrop } = useFileHandler(WELCOME_MD);
+    const { 
+        content, fileName, isModified, fileHandle, setContent, 
+        openFile, saveFile, saveFileAs, importFile, handleDrop, 
+        isImporting, undo, redo, canUndo, canRedo 
+    } = useFileHandler(WELCOME_MD);
     const [viewMode, setViewMode] = useState<"split" | "editor" | "preview">("split");
     const { setTheme, theme } = useTheme();
     const [isSyncScroll, setIsSyncScroll] = useState(true);
@@ -88,10 +97,15 @@ export default function MarkdownViewer() {
         if (!preview) return;
 
         isScrollingRef.current = true;
-        const percentage = textarea.scrollTop / (textarea.scrollHeight - textarea.clientHeight);
-        preview.scrollTop = percentage * (preview.scrollHeight - preview.clientHeight);
+        const scrollHeight = textarea.scrollHeight - textarea.clientHeight;
+        if (scrollHeight > 0) {
+            const percentage = textarea.scrollTop / scrollHeight;
+            const targetScroll = percentage * (preview.scrollHeight - preview.clientHeight);
+            preview.scrollTop = targetScroll;
+        }
 
-        setTimeout(() => { isScrollingRef.current = false; }, 50);
+        // Simpler unlock
+        setTimeout(() => { isScrollingRef.current = false; }, 20);
     };
 
     const handlePreviewScroll = (e: React.UIEvent<HTMLDivElement>) => {
@@ -102,10 +116,29 @@ export default function MarkdownViewer() {
         if (!textarea) return;
 
         isScrollingRef.current = true;
-        const percentage = preview.scrollTop / (preview.scrollHeight - preview.clientHeight);
-        textarea.scrollTop = percentage * (textarea.scrollHeight - textarea.clientHeight);
+        const scrollHeight = preview.scrollHeight - preview.clientHeight;
+        if (scrollHeight > 0) {
+            const percentage = preview.scrollTop / scrollHeight;
+            const targetScroll = percentage * (textarea.scrollHeight - textarea.clientHeight);
+            textarea.scrollTop = targetScroll;
+        }
 
-        setTimeout(() => { isScrollingRef.current = false; }, 50);
+        // Simpler unlock
+        setTimeout(() => { isScrollingRef.current = false; }, 20);
+    };
+
+
+
+    const handleExportMarkdown = () => {
+        const blob = new Blob([content], { type: "text/markdown" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName.endsWith(".md") ? fileName : `${fileName}.md`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     };
 
     const handleExportHtml = async () => {
@@ -160,6 +193,9 @@ export default function MarkdownViewer() {
         onOpen: openFile,
         onSave: saveFile,
         onSaveAs: saveFileAs,
+        onUndo: undo,
+        onRedo: redo,
+        onExportMarkdown: handleExportMarkdown,
         onExportHtml: handleExportHtml,
         onExportPdf: handleExportPdf,
         onToggleView: () => {
@@ -230,11 +266,11 @@ export default function MarkdownViewer() {
     React.useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
             if (!isResizing || !mainRef.current) return;
-            
+
             const rect = mainRef.current.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const percentage = (x / rect.width) * 100;
-            
+
             // Limit range between 20% and 80%
             if (percentage >= 15 && percentage <= 85) {
                 setSplitPosition(percentage);
@@ -272,7 +308,7 @@ export default function MarkdownViewer() {
                 <div className="flex items-center gap-6">
                     <span className="flex items-center gap-2" suppressHydrationWarning>
                         <div className={cn("w-1.5 h-1.5 rounded-full", isModified ? "bg-amber-500 animate-pulse" : "bg-emerald-500")} />
-                        <span className="font-semibold text-foreground/90">{fileName}</span>
+                        <span className="font-semibold text-foreground/90" suppressHydrationWarning>{fileName}</span>
                     </span>
                     <span className="hidden sm:inline border-l border-white/10 pl-6 space-x-4">
                         <span suppressHydrationWarning>{content.trim().split(/\s+/).filter(w => w.length > 0).length} Words</span>
@@ -288,7 +324,9 @@ export default function MarkdownViewer() {
             <div className="print:hidden relative z-40">
                 <Toolbar
                     onOpenFile={openFile}
+                    onImportFile={importFile}
                     onSaveFile={saveFile}
+                    onExportMarkdown={handleExportMarkdown}
                     onExportHtml={handleExportHtml}
                     onExportPdf={handleExportPdf}
                     viewMode={viewMode}
@@ -297,17 +335,36 @@ export default function MarkdownViewer() {
                     setIsSyncScroll={setIsSyncScroll}
                     isModified={isModified}
                     hasFileHandle={!!fileHandle}
+                    isImporting={isImporting}
                 />
             </div>
 
-            <main 
+            <main
                 ref={mainRef}
                 className="flex-1 flex overflow-hidden relative p-4 gap-4 print:p-0 print:block"
             >
                 {/* Drag Overlay */}
                 {isDragging && (
                     <div className="absolute inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center m-4 rounded-xl border-2 border-primary border-dashed animate-pulse print:hidden">
-                        <div className="text-xl font-medium text-primary">Drop Markdown file here</div>
+                        <div className="text-xl font-medium text-primary">Drop Markdown, PDF, or PPTX file here</div>
+                    </div>
+                )}
+
+                {/* Importing Overlay */}
+                {isImporting && (
+                    <div className="absolute inset-0 z-50 bg-background/60 backdrop-blur-xl flex flex-col items-center justify-center m-4 rounded-xl border border-white/10 shadow-2xl print:hidden animate-in fade-in zoom-in duration-300">
+                        <div className="relative">
+                            <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="w-8 h-8 bg-primary/20 rounded-full animate-ping" />
+                            </div>
+                        </div>
+                        <h2 className="mt-6 text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/60">
+                            Transforming Document
+                        </h2>
+                        <p className="mt-2 text-sm text-muted-foreground animate-pulse">
+                            Converting content to high-fidelity Markdown...
+                        </p>
                     </div>
                 )}
 
@@ -323,17 +380,23 @@ export default function MarkdownViewer() {
                         viewMode === "preview" ? "hidden" : "flex",
                         isResizing ? "transition-none" : ""
                     )}
-                    style={{ 
-                        flex: viewMode === "split" ? `0 0 ${splitPosition}%` : "1 1 0%" 
+                    style={{
+                        flex: viewMode === "split" ? `0 0 ${splitPosition}%` : "1 1 0%"
                     }}
                 >
-                    <EditorToolbar onInsert={handleInsert} />
+                    <EditorToolbar 
+                        onInsert={handleInsert} 
+                        onUndo={undo} 
+                        onRedo={redo}
+                        canUndo={canUndo}
+                        canRedo={canRedo}
+                    />
                     <textarea
                         ref={textareaRef}
                         onScroll={handleEditorScroll}
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
-                        className="flex-1 w-full h-full p-8 resize-none bg-transparent font-mono text-sm leading-relaxed focus:outline-none focus:ring-0 placeholder:text-muted-foreground/30 text-foreground/90 selection:bg-primary/40 scrollbar-thin scrollbar-thumb-white/10"
+                        className="flex-1 w-full h-full p-8 resize-none bg-transparent font-mono text-sm leading-relaxed focus:outline-none focus:ring-0 placeholder:text-muted-foreground/30 text-foreground/90 selection:bg-primary/40 custom-scrollbar"
                         placeholder="Ignite your creativity..."
                         spellCheck={false}
                     />
@@ -344,16 +407,20 @@ export default function MarkdownViewer() {
                     <div
                         onMouseDown={handleMouseDown}
                         className={cn(
-                            "w-1.5 h-1/2 self-center cursor-col-resize hover:bg-primary/40 transition-all z-30 group print:hidden rounded-full flex items-center justify-center",
-                            isResizing ? "bg-primary scale-y-110 shadow-[0_0_15px_rgba(139,92,246,0.5)]" : "bg-black/10 dark:bg-white/10"
+                            "w-1.5 h-1/2 self-center cursor-col-resize transition-all z-30 group print:hidden rounded-full flex items-center justify-center",
+                            isResizing 
+                                ? "bg-primary scale-y-110 shadow-[0_0_20px_rgba(139,92,246,0.6)]" 
+                                : "bg-black/20 dark:bg-white/40 hover:bg-primary/60 dark:shadow-[0_0_10px_rgba(139,92,246,0.1)]"
                         )}
                     >
-                        <div className="w-1 h-8 flex flex-col items-center justify-center gap-1 opacity-40 group-hover:opacity-100 transition-opacity">
-                            <div className="w-1 h-3 bg-black dark:bg-white rounded-full" />
-                            <div className="w-1 h-3 bg-black dark:bg-white rounded-full" />
+                        <div className="w-1 h-12 flex flex-col items-center justify-center gap-1.5 opacity-80 group-hover:opacity-100 transition-opacity">
+                            <div className="w-1 h-4 bg-black/60 dark:bg-white rounded-full" />
+                            <div className="w-1 h-4 bg-black/60 dark:bg-white rounded-full" />
                         </div>
                     </div>
                 )}
+
+
 
                 {/* Preview Pane */}
                 <div
@@ -362,14 +429,14 @@ export default function MarkdownViewer() {
                         viewMode === "editor" ? "hidden" : "flex",
                         isResizing ? "transition-none" : ""
                     )}
-                    style={{ 
-                        flex: viewMode === "split" ? `0 0 ${100 - splitPosition}%` : "1 1 0%" 
+                    style={{
+                        flex: viewMode === "split" ? `0 0 ${100 - splitPosition}%` : "1 1 0%"
                     }}
                 >
                     <div
                         ref={previewContainerRef}
                         onScroll={handlePreviewScroll}
-                        className="h-full w-full overflow-auto p-10 print:p-0 print:overflow-visible scrollbar-thin scrollbar-thumb-white/10"
+                        className="h-full w-full overflow-auto p-10 print:p-0 print:overflow-visible custom-scrollbar"
                     >
                         <MarkdownPreview content={content} onToggleTask={handleToggleTask} />
                     </div>
