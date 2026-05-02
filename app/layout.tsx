@@ -21,15 +21,16 @@ export const metadata: Metadata = {
     "Docx to Markdown", "Mermaid Diagrams", "LaTeX Editor",
     "PWA Markdown", "LocalMD", "Next.js Editor"
   ],
-  authors: [{ name: "Yash Ghodele", url: "https://yash-ghodele.pages.dev" }],
+  authors: [{ name: "Yash Ghodele", url: "https://yash-ghodele.pages.dev/" }],
   creator: "Yash Ghodele",
+  publisher: "Ugam Digital Studio",
   category: "technology",
-  metadataBase: new URL("https://yash-ghodele.pages.dev/projects/LocalMD"),
+  metadataBase: new URL("https://localmd.vercel.app/"),
 
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://yash-ghodele.pages.dev/LocalMD",
+    url: "https://localmd.vercel.app/",
     title: "LocalMD | Premium Local-First Markdown Architecture",
     description: "Transform PDFs, Word, and PPTs into Markdown instantly. Private, fast, and 100% local-first.",
     siteName: "LocalMD",

@@ -54,6 +54,16 @@ The platform is optimized for projects where structure, clarity, and security ar
 - **Executive Communication**: Using the premium "Liquid" aesthetic to draft and present strategies in an environment that reflects the quality of the ideas themselves.
 
 ---
+## 5. Project Authority
+**Built and Engineered by Ugam Digital Studio.**
+
+LocalMD is a flagship project of **Ugam Digital Studio**, founded by **Yash Ghodele**. Our studio is dedicated to building state-of-the-art, high-performance web architectures that prioritize user experience and data integrity.
+
+- **Founder**: Yash Ghodele
+- **Studio Vision**: Accelerating the digital landscape through secure, elegant, and local-first software.
+
+---
 
 > **The LocalMD Standard:**
 > *Total Sovereignty. Zero Friction. Maximum Aesthetic.*
+

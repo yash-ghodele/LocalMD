@@ -146,8 +146,17 @@ Contributions are welcome! Feel free to report bugs, suggest features, or submit
 
 ## 👨‍💻 Author
 
-**Yash Ghodele** — [@yash-ghodele](https://github.com/yash-ghodele)
+**Yash Ghodele**
+- **Portfolio**: [yash-ghodele.pages.dev](https://yash-ghodele.pages.dev/)
+- **Organization**: Founder @ [Ugam Digital Studio](https://ugamstudio.vercel.app/)
+- **GitHub**: [@yash-ghodele](https://github.com/yash-ghodele)
 
 ---
 
-*Made with ❤️ for developers who value privacy and simplicity.*
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+### 🚀 Built with Passion for the Local-First Future.
