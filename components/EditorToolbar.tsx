@@ -15,14 +15,33 @@ import {
     Table,
     CheckSquare,
     Quote,
+    Undo2,
+    Redo2,
 } from "lucide-react";
 
 interface EditorToolbarProps {
     onInsert: (before: string, after?: string) => void;
+    onUndo?: () => void;
+    onRedo?: () => void;
+    canUndo?: boolean;
+    canRedo?: boolean;
 }
 
-export function EditorToolbar({ onInsert }: EditorToolbarProps) {
+export function EditorToolbar({ onInsert, onUndo, onRedo, canUndo, canRedo }: EditorToolbarProps) {
     const buttons = [
+        {
+            icon: Undo2,
+            label: "Undo (Ctrl+Z)",
+            action: onUndo,
+            disabled: !canUndo,
+        },
+        {
+            icon: Redo2,
+            label: "Redo (Ctrl+Y)",
+            action: onRedo,
+            disabled: !canRedo,
+        },
+        { divider: true },
         {
             icon: Bold,
             label: "Bold",
@@ -114,7 +133,8 @@ export function EditorToolbar({ onInsert }: EditorToolbarProps) {
                     <button
                         key={idx}
                         onClick={button.action}
-                        className="p-1.5 hover:bg-white/10 text-muted-foreground hover:text-white rounded-lg transition-all active:scale-90"
+                        disabled={button.disabled}
+                        className="p-1.5 hover:bg-white/10 text-muted-foreground hover:text-white rounded-lg transition-all active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
                         title={button.label}
                         type="button"
                     >

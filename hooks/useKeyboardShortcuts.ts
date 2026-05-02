@@ -6,6 +6,9 @@ interface KeyboardShortcutsConfig {
     onOpen?: () => void;
     onSave?: () => void;
     onSaveAs?: () => void;
+    onUndo?: () => void;
+    onRedo?: () => void;
+    onExportMarkdown?: () => void;
     onExportHtml?: () => void;
     onExportPdf?: () => void;
     onToggleView?: () => void;
@@ -44,10 +47,28 @@ export function useKeyboardShortcuts(config: KeyboardShortcutsConfig) {
                 configRef.current.onSave?.();
             }
 
+            // Ctrl/Cmd + Z: Undo
+            if (ctrl && !e.shiftKey && e.key === "z") {
+                e.preventDefault();
+                configRef.current.onUndo?.();
+            }
+
+            // Ctrl/Cmd + Shift + Z or Ctrl/Cmd + Y: Redo
+            if ((ctrl && e.shiftKey && e.key === "Z") || (ctrl && e.key === "y")) {
+                e.preventDefault();
+                configRef.current.onRedo?.();
+            }
+
             // Ctrl/Cmd + E: Export HTML
             if (ctrl && e.key === "e") {
                 e.preventDefault();
                 configRef.current.onExportHtml?.();
+            }
+
+            // Ctrl/Cmd + M: Export Markdown
+            if (ctrl && e.key === "m") {
+                e.preventDefault();
+                configRef.current.onExportMarkdown?.();
             }
 
             // Ctrl/Cmd + P: Export PDF/Print
