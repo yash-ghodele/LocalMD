@@ -91,17 +91,17 @@ const MarkdownPreview = memo(function MarkdownPreview({ content, onToggleTask }:
 
                         return (
                             <input
-                                {...props}
                                 type="checkbox"
-                                onChange={() => {
+                                checked={props.checked}
+                                onChange={(e) => {
                                     if (onToggleTask) {
-                                        onToggleTask(currentIndex, !props.checked);
+                                        onToggleTask(currentIndex, e.target.checked);
                                     }
                                 }}
-                                className="cursor-pointer"
-                                disabled={!onToggleTask}
+                                className="task-list-item-checkbox"
                             />
                         );
+
                     },
                 }}
             >
