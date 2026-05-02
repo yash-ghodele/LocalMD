@@ -10,6 +10,8 @@ import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useTheme } from "next-themes";
 import { remark } from "remark";
 import html from "remark-html";
+import { FileText, Columns, Eye } from "lucide-react";
+
 
 const MarkdownPreview = dynamic(() => import("./MarkdownPreview"), { ssr: false });
 const TableOfContents = dynamic(() => import("./TableOfContents").then(mod => ({ default: mod.TableOfContents })), { ssr: false });
