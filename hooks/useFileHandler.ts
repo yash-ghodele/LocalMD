@@ -77,6 +77,7 @@ export function useFileHandler(initialContent: string) {
     const openFile = useCallback(async () => {
         try {
             if ("showOpenFilePicker" in window) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const [handle] = await (window as any).showOpenFilePicker({
                     types: [
                         {
@@ -127,22 +128,73 @@ export function useFileHandler(initialContent: string) {
         }
     }, []);
 
+    /**
+     * Saves to the currently open file handle.
+     * If no handle exists (untitled doc), falls through to saveFileAs.
+     */
     const saveFile = useCallback(async () => {
+        if (!state.fileHandle) {
+            // No handle — delegate to Save As
+            return saveFileAs();
+        }
         try {
-            if (state.fileHandle) {
-                const writable = await (state.fileHandle as any).createWritable();
-                await writable.write(state.content);
-                await writable.close();
-                setState((prev) => ({ ...prev, isModified: false }));
-            } else {
-                // No file handle, can't save
-                alert("No file to save. Please open or save as a new file.");
-            }
+            const writable = await state.fileHandle.createWritable();
+            await writable.write(state.content);
+            await writable.close();
+            setState((prev) => ({ ...prev, isModified: false }));
         } catch (err) {
             console.error("Error saving file:", err);
             alert("Failed to save file");
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [state.fileHandle, state.content]);
+
+    /**
+     * Opens a Save As dialog so the user can choose a destination.
+     * Works even for untitled (new) documents.
+     */
+    const saveFileAs = useCallback(async () => {
+        try {
+            if ("showSaveFilePicker" in window) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const handle = await (window as any).showSaveFilePicker({
+                    suggestedName: state.fileName,
+                    types: [
+                        {
+                            description: "Markdown File",
+                            accept: { "text/markdown": [".md"] },
+                        },
+                    ],
+                });
+                const writable = await handle.createWritable();
+                await writable.write(state.content);
+                await writable.close();
+                setState((prev) => ({
+                    ...prev,
+                    fileHandle: handle,
+                    fileName: (handle as FileSystemFileHandle & { name: string }).name,
+                    isModified: false,
+                }));
+            } else {
+                // Fallback: download via blob
+                const blob = new Blob([state.content], { type: "text/markdown" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = state.fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                setState((prev) => ({ ...prev, isModified: false }));
+            }
+        } catch (err) {
+            if ((err as Error).name !== "AbortError") {
+                console.error("Error saving file:", err);
+                alert("Failed to save file");
+            }
+        }
+    }, [state.fileName, state.content]);
 
     const handleDrop = useCallback(async (e: React.DragEvent) => {
         e.preventDefault();
@@ -155,7 +207,7 @@ export function useFileHandler(initialContent: string) {
         if (item.kind === "file") {
             try {
                 // getAsFileSystemHandle returns a Promise!
-                const entry = await (item as any).getAsFileSystemHandle?.(); 
+                const entry = await (item as DataTransferItem & { getAsFileSystemHandle?: () => Promise<FileSystemHandle | null> }).getAsFileSystemHandle?.();
 
                 if (entry && (entry.kind === "file") && (entry.name.endsWith(".md") || entry.name.endsWith(".markdown") || entry.name.endsWith(".txt"))) {
                     const file = await (entry as FileSystemFileHandle).getFile();
@@ -194,6 +246,7 @@ export function useFileHandler(initialContent: string) {
         setContent,
         openFile,
         saveFile,
+        saveFileAs,
         handleDrop,
     };
 }

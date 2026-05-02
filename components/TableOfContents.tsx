@@ -36,11 +36,12 @@ export function TableOfContents({ content }: TableOfContentsProps) {
     if (headings.length === 0) return null;
 
     const scrollToHeading = (text: string) => {
-        const preview = document.querySelector(".prose");
+        // Use the stable ID we set on the preview prose container
+        const preview = document.getElementById("markdown-preview-prose");
         if (!preview) return;
 
         const headingElements = preview.querySelectorAll("h1, h2, h3, h4, h5, h6");
-        const target = Array.from(headingElements).find((el) => el.textContent === text);
+        const target = Array.from(headingElements).find((el) => el.textContent?.trim() === text.trim());
 
         if (target) {
             target.scrollIntoView({ behavior: "smooth", block: "start" });

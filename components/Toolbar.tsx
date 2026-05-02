@@ -1,28 +1,35 @@
 "use client";
 
 import React from "react";
-import { Moon, Sun, FileText, Columns, Eye, Download, FileUp, Link as LinkIcon } from "lucide-react";
+import Image from "next/image";
+import { Moon, Sun, FileText, Columns, Eye, Download, FileUp, Save, Link as LinkIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
 interface ToolbarProps {
     onOpenFile: () => void;
+    onSaveFile: () => void;
     onExportHtml: () => void;
     onExportPdf: () => void;
     viewMode: "split" | "editor" | "preview";
     setViewMode: (mode: "split" | "editor" | "preview") => void;
     isSyncScroll?: boolean;
     setIsSyncScroll?: (isSync: boolean) => void;
+    isModified?: boolean;
+    hasFileHandle?: boolean;
 }
 
 export function Toolbar({
     onOpenFile,
+    onSaveFile,
     onExportHtml,
     onExportPdf,
     viewMode,
     setViewMode,
     isSyncScroll,
     setIsSyncScroll,
+    isModified,
+    hasFileHandle,
 }: ToolbarProps) {
     const { theme, setTheme } = useTheme();
 
@@ -30,7 +37,7 @@ export function Toolbar({
         <div className="flex items-center justify-center pt-4 sticky top-0 z-50 pointer-events-none">
             <div className="flex items-center gap-4 px-6 py-2.5 glass rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-white/10 pointer-events-auto transition-all duration-500 hover:scale-[1.02] hover:shadow-primary/20">
                 <div className="flex items-center gap-3 pr-4 border-r border-black/5 dark:border-white/10">
-                    <img src="/icon.png" alt="App Icon" className="w-7 h-7 rounded-lg shadow-lg" />
+                    <Image src="/icon.png" alt="App Icon" width={28} height={28} className="rounded-lg shadow-lg" />
                     <h1 className="text-xs font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-[var(--logo-from)] to-[var(--logo-to)] hidden lg:block uppercase italic">Local MD</h1>
                 </div>
 
@@ -38,10 +45,25 @@ export function Toolbar({
                     <button
                         onClick={onOpenFile}
                         className="flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl bg-primary text-primary-foreground hover:shadow-lg hover:shadow-primary/40 transition-all active:scale-95"
-                        title="Open File"
+                        title="Open File (Ctrl+O)"
                     >
                         <FileUp className="w-3.5 h-3.5" />
                         <span className="hidden sm:inline">Open</span>
+                    </button>
+
+                    {/* Save button — shown only when there is content to save */}
+                    <button
+                        onClick={onSaveFile}
+                        className={cn(
+                            "flex items-center gap-2 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl transition-all active:scale-95",
+                            isModified
+                                ? "bg-amber-500/20 text-amber-500 hover:bg-amber-500/30 border border-amber-500/30"
+                                : "text-muted-foreground hover:bg-white/5 border border-transparent"
+                        )}
+                        title={hasFileHandle ? "Save (Ctrl+S)" : "Save As (Ctrl+S)"}
+                    >
+                        <Save className="w-3.5 h-3.5" />
+                        <span className="hidden sm:inline">{hasFileHandle ? "Save" : "Save As"}</span>
                     </button>
 
                     <div className="flex bg-muted/50 dark:bg-white/5 rounded-xl p-1 border border-black/5 dark:border-white/5">
@@ -104,6 +126,7 @@ export function Toolbar({
                     <div className="flex items-center bg-muted/50 dark:bg-white/5 rounded-xl border border-black/5 dark:border-white/5 p-1 gap-1">
                         <button
                             onClick={() => setTheme("light")}
+                            suppressHydrationWarning
                             className={cn(
                                 "p-2 rounded-lg transition-all duration-300 active:scale-90",
                                 theme === "light" 
@@ -116,6 +139,7 @@ export function Toolbar({
                         </button>
                         <button
                             onClick={() => setTheme("dark")}
+                            suppressHydrationWarning
                             className={cn(
                                 "p-2 rounded-lg transition-all duration-300 active:scale-90",
                                 theme === "dark" 

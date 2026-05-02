@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 
 interface KeyboardShortcutsConfig {
     onOpen?: () => void;
     onSave?: () => void;
+    onSaveAs?: () => void;
     onExportHtml?: () => void;
     onExportPdf?: () => void;
     onToggleView?: () => void;
@@ -12,46 +13,63 @@ interface KeyboardShortcutsConfig {
 }
 
 export function useKeyboardShortcuts(config: KeyboardShortcutsConfig) {
+    // Store latest callbacks in a ref so the effect never needs to re-run
+    // when the caller re-creates the config object on each render.
+    const configRef = useRef(config);
+    // useLayoutEffect runs synchronously after each render, before paint —
+    // this satisfies react-hooks/refs while keeping configRef always up to date.
+    useLayoutEffect(() => {
+        configRef.current = config;
+    });
+
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
+            const ctrl = e.ctrlKey || e.metaKey;
+
             // Ctrl/Cmd + O: Open file
-            if ((e.ctrlKey || e.metaKey) && e.key === "o") {
+            if (ctrl && e.key === "o") {
                 e.preventDefault();
-                config.onOpen?.();
+                configRef.current.onOpen?.();
             }
 
-            // Ctrl/Cmd + S: Save file
-            if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+            // Ctrl/Cmd + Shift + S: Save As
+            if (ctrl && e.shiftKey && e.key === "S") {
                 e.preventDefault();
-                config.onSave?.();
+                configRef.current.onSaveAs?.();
+            }
+
+            // Ctrl/Cmd + S (no shift): Save file
+            if (ctrl && !e.shiftKey && e.key === "s") {
+                e.preventDefault();
+                configRef.current.onSave?.();
             }
 
             // Ctrl/Cmd + E: Export HTML
-            if ((e.ctrlKey || e.metaKey) && e.key === "e") {
+            if (ctrl && e.key === "e") {
                 e.preventDefault();
-                config.onExportHtml?.();
+                configRef.current.onExportHtml?.();
             }
 
             // Ctrl/Cmd + P: Export PDF/Print
-            if ((e.ctrlKey || e.metaKey) && e.key === "p") {
+            if (ctrl && e.key === "p") {
                 e.preventDefault();
-                config.onExportPdf?.();
+                configRef.current.onExportPdf?.();
             }
 
             // Ctrl/Cmd + /: Toggle view mode
-            if ((e.ctrlKey || e.metaKey) && e.key === "/") {
+            if (ctrl && e.key === "/") {
                 e.preventDefault();
-                config.onToggleView?.();
+                configRef.current.onToggleView?.();
             }
 
             // Ctrl/Cmd + D: Toggle dark mode
-            if ((e.ctrlKey || e.metaKey) && e.key === "d") {
+            if (ctrl && e.key === "d") {
                 e.preventDefault();
-                config.onToggleTheme?.();
+                configRef.current.onToggleTheme?.();
             }
         };
 
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [config]);
+    }, []); // Empty deps — runs once, always reads latest via ref
 }

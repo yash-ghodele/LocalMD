@@ -10,19 +10,19 @@ import rehypeHighlight from "rehype-highlight";
 import rehypeKatex from "rehype-katex";
 import { MermaidDiagram } from "./MermaidDiagram";
 import { Check, Copy } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface MarkdownPreviewProps {
     content: string;
     onToggleTask?: (index: number, checked: boolean) => void;
 }
 
-const CodeBlock = function ({ className, children, ...props }: any) {
+const CodeBlock = function ({ className, children, ...props }: React.ComponentPropsWithoutRef<"code"> & { className?: string }) {
     const [copied, setCopied] = useState(false);
     const match = /language-(\w+)/.exec(className || "");
     const language = match ? match[1] : "";
     const codeString = String(children).replace(/\n$/, "");
-    const isInline = !match && !Buffer.isBuffer(children) && !String(children).includes("\n");
+    // A code element is "inline" if it has no language class and its content has no newlines
+    const isInline = !match && !codeString.includes("\n");
 
     // Render Mermaid diagrams with custom component (no DOM manipulation!)
     if (language === "mermaid") {
@@ -66,11 +66,16 @@ const CodeBlock = function ({ className, children, ...props }: any) {
 };
 
 const MarkdownPreview = memo(function MarkdownPreview({ content, onToggleTask }: MarkdownPreviewProps) {
-    // Counter to track which checkbox we are rendering
-    let checkboxIndex = 0;
+    // A plain counter object, recreated each render so it always starts at 0.
+    // Using an object (not a primitive) lets the input renderer close over it
+    // and mutate it during the ReactMarkdown render pass without touching a ref.
+    const checkboxCounter = { current: 0 };
 
     return (
-        <div className="prose prose-sm dark:prose-invert max-w-none w-full break-words prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary prose-pre:bg-white/5 prose-pre:backdrop-blur-sm prose-pre:border prose-pre:border-white/10 prose-pre:rounded-xl">
+        <div
+            id="markdown-preview-prose"
+            className="prose prose-sm dark:prose-invert max-w-none w-full break-words prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary prose-pre:bg-white/5 prose-pre:backdrop-blur-sm prose-pre:border prose-pre:border-white/10 prose-pre:rounded-xl"
+        >
             <ReactMarkdown
                 remarkPlugins={[remarkGfm, remarkMath, remarkGemoji, remarkGithubBlockquoteAlert]}
                 rehypePlugins={[rehypeHighlight, rehypeKatex]}
@@ -81,8 +86,8 @@ const MarkdownPreview = memo(function MarkdownPreview({ content, onToggleTask }:
                             return <input {...props} />;
                         }
 
-                        const currentIndex = checkboxIndex;
-                        checkboxIndex++;
+                        const currentIndex = checkboxCounter.current;
+                        checkboxCounter.current++;
 
                         return (
                             <input
@@ -97,7 +102,7 @@ const MarkdownPreview = memo(function MarkdownPreview({ content, onToggleTask }:
                                 disabled={!onToggleTask}
                             />
                         );
-                    }
+                    },
                 }}
             >
                 {content}

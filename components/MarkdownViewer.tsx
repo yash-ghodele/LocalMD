@@ -24,6 +24,7 @@ Experience the ultimate **Liquid Glassmorphism** Markdown editor. Fully offline,
 | :--- | :--- |
 | **Open File** | \`Ctrl + O\` |
 | **Save File** | \`Ctrl + S\` |
+| **Save As** | \`Ctrl + Shift + S\` |
 | **Export HTML** | \`Ctrl + E\` |
 | **Print / PDF** | \`Ctrl + P\` |
 | **Toggle View** | \`Ctrl + /\` |
@@ -67,7 +68,7 @@ $$i\\hbar\\frac{\\partial}{\\partial t}\\Psi(\\mathbf{r},t) = \\hat{H}\\Psi(\\ma
 `;
 
 export default function MarkdownViewer() {
-    const { content, fileName, isModified, fileHandle, setContent, openFile, saveFile, handleDrop } = useFileHandler(WELCOME_MD);
+    const { content, fileName, isModified, fileHandle, setContent, openFile, saveFile, saveFileAs, handleDrop } = useFileHandler(WELCOME_MD);
     const [viewMode, setViewMode] = useState<"split" | "editor" | "preview">("split");
     const { setTheme, theme } = useTheme();
     const [isSyncScroll, setIsSyncScroll] = useState(true);
@@ -157,7 +158,8 @@ export default function MarkdownViewer() {
     // Keyboard shortcuts
     useKeyboardShortcuts({
         onOpen: openFile,
-        onSave: fileHandle ? saveFile : undefined,
+        onSave: saveFile,
+        onSaveAs: saveFileAs,
         onExportHtml: handleExportHtml,
         onExportPdf: handleExportPdf,
         onToggleView: () => {
@@ -268,13 +270,13 @@ export default function MarkdownViewer() {
             {/* Minimalist Top Status Bar */}
             <div className="flex items-center justify-between px-6 py-2 bg-white/5 backdrop-blur-md border-b border-white/10 text-[10px] uppercase tracking-widest text-muted-foreground/80 print:hidden z-50">
                 <div className="flex items-center gap-6">
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center gap-2" suppressHydrationWarning>
                         <div className={cn("w-1.5 h-1.5 rounded-full", isModified ? "bg-amber-500 animate-pulse" : "bg-emerald-500")} />
                         <span className="font-semibold text-foreground/90">{fileName}</span>
                     </span>
                     <span className="hidden sm:inline border-l border-white/10 pl-6 space-x-4">
-                        <span>{content.trim().split(/\s+/).filter(w => w.length > 0).length} Words</span>
-                        <span>{content.length} Characters</span>
+                        <span suppressHydrationWarning>{content.trim().split(/\s+/).filter(w => w.length > 0).length} Words</span>
+                        <span suppressHydrationWarning>{content.length} Characters</span>
                     </span>
                 </div>
                 <div className="flex items-center gap-4">
@@ -286,12 +288,15 @@ export default function MarkdownViewer() {
             <div className="print:hidden relative z-40">
                 <Toolbar
                     onOpenFile={openFile}
+                    onSaveFile={saveFile}
                     onExportHtml={handleExportHtml}
                     onExportPdf={handleExportPdf}
                     viewMode={viewMode}
                     setViewMode={setViewMode}
                     isSyncScroll={isSyncScroll}
                     setIsSyncScroll={setIsSyncScroll}
+                    isModified={isModified}
+                    hasFileHandle={!!fileHandle}
                 />
             </div>
 
@@ -373,32 +378,6 @@ export default function MarkdownViewer() {
 
             {/* Table of Contents */}
             <TableOfContents content={content} />
-
-
-            {/* Print Styles */}
-            <style jsx global>{`
-        @media print {
-          body {
-            background: white;
-            color: black;
-          }
-          .print\\:hidden {
-            display: none !important;
-          }
-          .print\\:block {
-            display: block !important;
-          }
-          .print\\:overflow-visible {
-            overflow: visible !important;
-          }
-          .print\\:h-auto {
-            height: auto !important;
-          }
-          ::-webkit-scrollbar {
-            display: none;
-          }
-        }
-      `}</style>
         </div>
     );
 }

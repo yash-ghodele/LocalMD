@@ -1,47 +1,62 @@
 # Local Markdown Viewer
 
-A fast, secure, and privacy-focused local-first Markdown viewer and editor built with Next.js. All your data stays on your device—no servers, no tracking, no cloud storage.
+A fast, secure, and privacy-focused local-first Markdown viewer and editor built with Next.js. All your data stays on your device — no servers, no tracking, no cloud storage.
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Next.js](https://img.shields.io/badge/Next.js-16-black)
+![React](https://img.shields.io/badge/React-19-61dafb)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8)
 
 ## ✨ Features
 
 ### Core Functionality
 - **📝 Split-Screen Editor**: Edit Markdown on the left, see live preview on the right
-- **↔️ Resizable Partition**: Drag the vertical divider to customize your workspace layout
+- **↔️ Resizable Partition**: Drag the vertical divider to customize your workspace layout (15–85% range)
 - **🎨 GitHub-Flavored Markdown**: Full support for tables, task lists, and [GitHub alerts](https://github.com/orgs/community/discussions/16925)
-- **📐 LaTeX & Math**: Beautiful math formulas with `remark-math` and `katex`
-- **📊 Mermaid Diagrams**: Render flowcharts and diagrams directly from code
-- **🎯 Syntax Highlighting**: Beautiful code blocks with `rehype-highlight`
-- **🌓 Dark/Light Mode**: System-aware theme with manual toggle
-- **📱 Responsive Design**: Works seamlessly on desktop, tablet, and mobile
+- **📐 LaTeX & Math**: Beautiful math formulas rendered with `remark-math` + `KaTeX`
+- **📊 Mermaid Diagrams**: Flowcharts, sequence diagrams, and more — theme-aware and live
+- **🎯 Syntax Highlighting**: Beautiful code blocks with `rehype-highlight` (GitHub Dark theme)
+- **📋 Copy Code Button**: One-click copy on hover for every code block
+- **✅ Interactive Tasks**: Click task checkboxes in the preview — they update the source Markdown live
+- **🌓 Dark/Light Mode**: System-aware theme with manual toggle (Light / Dark)
+- **📑 Table of Contents**: Auto-generated floating TOC panel from your headings
+- **📊 Live Stats**: Real-time word count and character count in the status bar
 
 ### File Management
-- **📂 File System Access API**: Native file picker with write access (Chrome, Edge)
-- **🔄 Drag & Drop**: Simply drag `.md` files onto the window
-- **💾 Graceful Fallback**: Standard file input for unsupported browsers
+- **📂 Open File**: Native file picker via the File System Access API (Chrome/Edge) with fallback `<input>` for all browsers
+- **💾 Save File**: Write changes back to the original file directly — no re-download needed
+- **💾 Save As**: Choose a new destination for any document, including unsaved drafts
+- **🔄 Drag & Drop**: Drop any `.md`, `.markdown`, or `.txt` file directly onto the window
+- **🕐 Auto-Save**: Content is debounce-saved to `localStorage` every 2 seconds — you never lose a draft
+- **🔧 Self-Healing**: Automatically resets a corrupted Welcome Guide from older app versions
+
+### Editor Toolbar
+Insert common Markdown syntax with one click: **Bold**, *Italic*, ~~Strikethrough~~, `Code`, H1, H2, lists, task lists, blockquotes, links, images, and tables.
 
 ### Export Options
-- **📄 Export to HTML**: Standalone HTML file with embedded styles
-- **🖨️ Export to PDF**: Print-optimized layout via browser print dialog
+- **📄 Export to HTML**: Standalone self-contained HTML file with embedded GitHub-style CSS
+- **🖨️ Export to PDF**: Clean print-optimized layout via the browser print dialog (glassmorphism removed for clean output)
 
 ### Privacy & Performance
 - **🔒 100% Local**: No analytics, no external requests, no data collection
 - **⚡ Offline-First**: PWA support with service worker caching
-- **🚀 Fast Loading**: Optimized bundle with code splitting
+- **🚀 Fast Loading**: Optimized production bundle with code splitting and dynamic imports
+
+---
 
 ## 📖 Documentation
 
-For in-depth details about the project, please refer to our comprehensive documentation:
+| Doc | Description |
+|-----|-------------|
+| [🚀 Overview](doc/overview.md) | Project mission, goals, and core philosophy |
+| [🏗️ Tech Stack](doc/tech-stack.md) | Breakdown of the Next.js 16 + Tailwind v4 architecture |
+| [✨ Features](doc/features.md) | Deep dive into all premium features |
+| [🧩 Architecture](doc/architecture.md) | Component map, hooks, and rendering pipeline |
+| [🔌 API Reference](doc/api-reference.md) | File System Access API, hooks, and design tokens |
+| [⌨️ User Guide](doc/user-guide.md) | Keyboard shortcuts and power interactions |
 
--   **[🚀 Overview](doc/overview.md)**: Project mission, goals, and core philosophy.
--   **[🏗️ Tech Stack](doc/tech-stack.md)**: Detailed breakdown of the modern Next.js 16 + Tailwind 4 architecture.
--   **[✨ Feature Guide](doc/features.md)**: Deep dive into premium features like Glassmorphism, Math, and Diagrams.
--   **[🧩 Project Architecture](doc/architecture.md)**: Folder structure, component mappings, and rendering pipeline.
--   **[🔌 API & Implementation](doc/api-reference.md)**: Technical guide for the File System Access API and custom hooks.
--   **[⌨️ User Guide](doc/user-guide.md)**: Master the keyboard shortcuts and productivity features.
+---
 
 ## 🚀 Quick Start
 
@@ -67,111 +82,122 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ### Production Build
 
 ```bash
-# Create optimized production build
 npm run build
-
-# Start production server
 npm start
 ```
 
+---
+
+## ⌨️ Keyboard Shortcuts
+
+| Shortcut | Action |
+| :--- | :--- |
+| `Ctrl + O` | Open a local Markdown file |
+| `Ctrl + S` | Save to current file (Save As for untitled docs) |
+| `Ctrl + Shift + S` | Save As — choose a new destination |
+| `Ctrl + E` | Export as standalone HTML |
+| `Ctrl + P` | Export as PDF / open print dialog |
+| `Ctrl + /` | Cycle view modes: Split → Editor → Preview |
+| `Ctrl + D` | Toggle Light / Dark theme |
+
+---
+
 ## 📖 Usage
 
-1. **Open a File**
-   - Click the "Open File" button
-   - Or drag a `.md` file onto the window
+1. **Open a File** — Click **Open** in the toolbar, press `Ctrl+O`, or drag a `.md` file onto the window
+2. **Edit** — Write Markdown in the left pane; the right pane updates live
+3. **Resize** — Drag the center divider to adjust the editor/preview split
+4. **Save** — Click **Save** (amber when unsaved), or press `Ctrl+S`; `Ctrl+Shift+S` to save to a new file
+5. **Export** — Click the download icon for HTML, or the file icon for PDF
+6. **Navigate** — Click the list icon (bottom-right) to open the Table of Contents
+7. **Theme** — Click ☀️/🌙 in the toolbar or press `Ctrl+D`
 
-2. **Edit and Preview**
-   - Type Markdown in the left pane
-   - See live preview on the right
-   - **Adjust Workspace**: Drag the vertical divider to resize panes
-   - Toggle between Editor/Split/Preview modes
-
-3. **Export**
-   - Click "HTML" to download standalone HTML
-   - Click "PDF" to open print dialog for PDF export
-
-4. **Customize**
-   - Click the sun/moon icon to toggle dark/light theme
+---
 
 ## 🛠️ Tech Stack
 
-- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
-- **Language**: [TypeScript 5](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) + Typography plugin
-- **Markdown**: 
-  - [react-markdown](https://github.com/remarkjs/react-markdown)
-  - [remark-gfm](https://github.com/remarkjs/remark-gfm)
-  - [remark-math](https://github.com/remarkjs/remark-math) & [katex](https://katex.org/)
-  - [mermaid](https://mermaid.js.org/)
-  - [rehype-highlight](https://github.com/rehypejs/rehype-highlight)
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Theme**: [next-themes](https://github.com/pacocoursey/next-themes)
-- **PWA**: [@ducanh2912/next-pwa](https://github.com/DuCanhGH/next-pwa)
+| Layer | Technology |
+|-------|-----------|
+| Framework | [Next.js 16](https://nextjs.org/) (App Router, Webpack) |
+| Language | [TypeScript 5](https://www.typescriptlang.org/) |
+| UI Library | [React 19](https://react.dev/) |
+| Styling | [Tailwind CSS 4](https://tailwindcss.com/) + `@tailwindcss/typography` |
+| Markdown | `react-markdown`, `remark-gfm`, `remark-math`, `remark-gemoji`, `remark-github-blockquote-alert` |
+| Math | `rehype-katex` + `KaTeX` |
+| Diagrams | [Mermaid](https://mermaid.js.org/) |
+| Code Highlighting | `rehype-highlight` (GitHub Dark theme) |
+| Icons | [Lucide React](https://lucide.dev/) |
+| Theme | [next-themes](https://github.com/pacocoursey/next-themes) |
+| PWA | [@ducanh2912/next-pwa](https://github.com/DuCanhGH/next-pwa) |
+
+---
 
 ## 📁 Project Structure
 
 ```
 markdown-viewer/
 ├── app/
-│   ├── globals.css          # Global styles and Tailwind config
-│   ├── layout.tsx           # Root layout with theme provider
-│   ├── manifest.ts          # PWA manifest
-│   └── page.tsx             # Main entry point
+│   ├── globals.css           # Tailwind v4 design system + glassmorphism tokens + print styles
+│   ├── github-alerts.css     # GitHub-style blockquote alert styles
+│   ├── layout.tsx            # Root layout — SEO metadata, fonts, ThemeProvider
+│   ├── manifest.ts           # PWA manifest
+│   └── page.tsx              # Entry point — renders <MarkdownViewer />
 ├── components/
-│   ├── MarkdownViewer.tsx   # Main viewer component
-│   ├── MarkdownPreview.tsx  # Markdown rendering component
-│   ├── Toolbar.tsx          # Top toolbar with controls
-│   └── theme-provider.tsx   # Theme context wrapper
+│   ├── MarkdownViewer.tsx    # Core orchestrator: layout, resizing, drag-drop, exports
+│   ├── MarkdownPreview.tsx   # Markdown → HTML render pipeline
+│   ├── Toolbar.tsx           # Floating toolbar: open, save, view modes, export, theme
+│   ├── EditorToolbar.tsx     # Markdown formatting insertion buttons
+│   ├── MermaidDiagram.tsx    # Theme-aware Mermaid SVG renderer
+│   ├── TableOfContents.tsx   # Auto-generated TOC floating panel
+│   └── theme-provider.tsx    # next-themes wrapper
 ├── hooks/
-│   └── useFileHandler.ts    # File system access logic
+│   ├── useFileHandler.ts     # File open, save, save-as, drag-drop, autosave
+│   └── useKeyboardShortcuts.ts # Global keyboard shortcut bindings
 ├── lib/
-│   └── utils.ts             # Utility functions (cn)
+│   └── utils.ts              # cn() utility (clsx + tailwind-merge)
 ├── types/
-│   └── file-system.d.ts     # TypeScript declarations for FS API
+│   └── file-system.d.ts      # TypeScript declarations for File System Access API
 └── public/
-    ├── icon.svg             # PWA icon
-    └── sw.js                # Generated service worker
+    ├── icon.png              # PWA icon
+    └── sw.js                 # Generated service worker (production only)
 ```
 
-## 🔐 Privacy & Security
-
-- **No Server**: Everything runs in your browser
-- **No Analytics**: Zero tracking or telemetry
-- **No Cloud**: Files never leave your device
-- **No Network Calls**: After initial load, works completely offline
+---
 
 ## 🌐 Browser Support
 
 | Feature | Chrome | Edge | Firefox | Safari |
 |---------|--------|------|---------|--------|
-| Basic Viewer | ✅ | ✅ | ✅ | ✅ |
-| File System Access API | ✅ | ✅ | ⚠️ | ⚠️ |
+| Basic Viewer & Editor | ✅ | ✅ | ✅ | ✅ |
+| File System Access API (Open/Save) | ✅ | ✅ | ⚠️ | ⚠️ |
+| Save As dialog | ✅ | ✅ | ⚠️ | ⚠️ |
 | PWA Install | ✅ | ✅ | ❌ | ✅ |
 
-*⚠️ = Falls back to standard file input*
-
-## 📝 License
-
-MIT License - see [LICENSE](LICENSE) for details.
-
-## 🤝 Contributing
-
-Contributions are welcome! Feel free to:
-- Report bugs
-- Suggest features
-- Submit pull requests
-
-## 👨‍💻 Author
-
-**Yash Ghodele**
-- GitHub: [@yash-ghodele](https://github.com/yash-ghodele)
-
-## 🙏 Acknowledgments
-
-- [Next.js](https://nextjs.org/) team for the amazing framework
-- [Tailwind CSS](https://tailwindcss.com/) for utility-first styling
-- [rehype](https://github.com/rehypejs) and [remark](https://github.com/remarkjs) ecosystems
+*⚠️ = Falls back gracefully to standard `<input type="file">` / blob download*
 
 ---
 
-**Made with ❤️ for developers who value privacy and simplicity.**
+## 🔐 Privacy & Security
+
+- **No Server**: Everything runs in your browser — zero backend
+- **No Analytics**: No tracking, telemetry, or third-party scripts
+- **No Cloud**: Your files never leave your device
+- **No Network after Load**: Works fully offline once the PWA is cached
+
+---
+
+## 📝 License
+
+MIT License — see [LICENSE](LICENSE) for details.
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to report bugs, suggest features, or submit pull requests.
+
+## 👨‍💻 Author
+
+**Yash Ghodele** — [@yash-ghodele](https://github.com/yash-ghodele)
+
+---
+
+*Made with ❤️ for developers who value privacy and simplicity.*

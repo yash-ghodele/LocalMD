@@ -181,3 +181,94 @@
   color: var(--primary) !important;
   background: rgba(255, 255, 255, 0.05) !important;
 }
+
+/* ============================================================
+   Light mode prose — pin dark text so glassmorphism backdrop
+   doesn't wash out the typography plugin's CSS variable cascade
+   ============================================================ */
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  color: #0f0f1a !important;
+}
+.prose p, .prose li, .prose td, .prose th {
+  color: #1a1a2e !important;
+}
+.prose strong {
+  color: #0f0f1a !important;
+}
+.prose a {
+  color: hsl(var(--primary)) !important;
+}
+.prose blockquote {
+  border-left-color: hsl(var(--primary)) !important;
+  color: #374151 !important;
+  background: rgba(0, 0, 0, 0.03);
+  padding: 0.5rem 1rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+.prose code {
+  color: hsl(var(--primary)) !important;
+}
+.prose th code, .prose td code {
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+.katex, .katex * {
+  color: #0f0f1a !important;
+}
+
+/* Dark mode overrides take precedence over the light rules above */
+.dark .prose a {
+  color: hsl(var(--primary)) !important;
+}
+.dark .katex, .dark .katex * {
+  color: #ffffff !important;
+}
+.dark .prose code {
+  color: hsl(var(--primary)) !important;
+}
+
+/* ============================================================
+   Print / PDF styles
+   Replaces the <style jsx global> block in MarkdownViewer.tsx
+   ============================================================ */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Hide all UI chrome */
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Show the preview pane as a normal block */
+  .print\:block {
+    display: block !important;
+  }
+
+  .print\:overflow-visible {
+    overflow: visible !important;
+  }
+
+  .print\:h-auto {
+    height: auto !important;
+  }
+
+  .print\:p-0 {
+    padding: 0 !important;
+  }
+
+  /* Remove glassmorphism in print */
+  .glass {
+    background: white !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Hide scrollbars */
+  ::-webkit-scrollbar {
+    display: none !important;
+  }
+}
