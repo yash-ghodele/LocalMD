@@ -12,8 +12,9 @@ A state-of-the-art, privacy-focused local-first Markdown editor and transformati
 
 ### 🚀 Advanced Document Transformation
 - **📄 PDF to Markdown**: High-fidelity text extraction with intelligent heading detection and structural preservation.
+- **📝 Word to Markdown**: Convert `.docx` files to semantic Markdown instantly using Mammoth.js.
 - **📊 PPTX to Markdown**: Transform PowerPoint presentations into structured Markdown slides instantly.
-- **🔄 Smart Drag & Drop**: Drop any `.md`, `.pdf`, or `.pptx` file directly onto the window for instant conversion.
+- **🔄 Smart Drag & Drop**: Drop any `.md`, `.pdf`, `.docx`, or `.pptx` file directly onto the window for instant conversion.
 
 ### 📝 Editor & Architecture
 - **⏱️ Undo/Redo History**: Robust programmatic history engine — never lose an edit, even after complex toolbar transformations.

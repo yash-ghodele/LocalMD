@@ -345,8 +345,8 @@ export default function MarkdownViewer() {
             >
                 {/* Drag Overlay */}
                 {isDragging && (
-                    <div className="absolute inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center m-4 rounded-xl border-2 border-primary border-dashed animate-pulse print:hidden">
-                        <div className="text-xl font-medium text-primary">Drop Markdown, PDF, or PPTX file here</div>
+                    <div className="absolute inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center m-4 rounded-xl border-2 border-primary border-dashed animate-pulse print:hidden pointer-events-none">
+                        <div className="text-xl font-medium text-primary pointer-events-none">Drop Markdown, PDF, PPTX, or Word file here</div>
                     </div>
                 )}
 

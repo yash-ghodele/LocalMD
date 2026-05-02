@@ -132,3 +132,19 @@ export async function extractTextFromPPTX(file: File): Promise<string> {
     return fullMarkdown.trim() || "No text could be extracted from this PPTX.";
 }
 
+import * as mammoth from "mammoth";
+
+/**
+ * Extracts content from a Word document (.docx) and converts it to Markdown.
+ */
+export async function extractTextFromDOCX(arrayBuffer: ArrayBuffer): Promise<string> {
+    try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const result = await (mammoth as any).convertToMarkdown({ arrayBuffer });
+        return result.value;
+    } catch (error) {
+        console.error("DOCX extraction error:", error);
+        throw new Error("Failed to extract text from Word document");
+    }
+}
+

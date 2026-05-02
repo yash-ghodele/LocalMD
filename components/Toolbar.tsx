@@ -62,7 +62,7 @@ export function Toolbar({
                         onClick={onImportFile}
                         disabled={isImporting}
                         className="flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                        title="Import PDF/PPTX"
+                        title="Import PDF/DOCX/PPTX"
                     >
                         {isImporting ? (
                             <Loader2 className="w-3.5 h-3.5 animate-spin" />

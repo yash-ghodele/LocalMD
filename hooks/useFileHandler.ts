@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { extractTextFromPDF, extractTextFromPPTX } from "@/lib/importers";
+import { extractTextFromPDF, extractTextFromPPTX, extractTextFromDOCX } from "@/lib/importers";
 
 export interface FileHandlerState {
     content: string;
@@ -138,6 +138,7 @@ export function useFileHandler(initialContent: string) {
                             accept: {
                                 "application/pdf": [".pdf"],
                                 "application/vnd.openxmlformats-officedocument.presentationml.presentation": [".pptx"],
+                                "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
                             },
                         },
                     ],
@@ -153,6 +154,8 @@ export function useFileHandler(initialContent: string) {
                     text = await extractTextFromPDF(file);
                 } else if (file.name.endsWith(".pptx")) {
                     text = await extractTextFromPPTX(file);
+                } else if (file.name.endsWith(".docx")) {
+                    text = await extractTextFromDOCX(file);
                 }
 
                 setState({
