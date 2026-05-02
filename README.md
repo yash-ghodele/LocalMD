@@ -49,7 +49,8 @@ Insert common Markdown syntax with one click: **Bold**, *Italic*, ~~Strikethroug
 
 | Doc | Description |
 |-----|-------------|
-| [🚀 Overview](doc/overview.md) | Project mission, goals, and core philosophy |
+| [🧬 Brand DNA](doc/dna.md) | Core mission, identity, and target audience persona |
+| [🚀 Overview](doc/overview.md) | Project goals and core philosophy |
 | [🏗️ Tech Stack](doc/tech-stack.md) | Breakdown of the Next.js 16 + Tailwind v4 architecture |
 | [✨ Features](doc/features.md) | Deep dive into all premium features |
 | [🧩 Architecture](doc/architecture.md) | Component map, hooks, and rendering pipeline |
