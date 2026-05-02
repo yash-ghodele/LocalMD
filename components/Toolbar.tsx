@@ -203,8 +203,9 @@ function ViewToggle({
                 "px-4 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg transition-all flex items-center gap-2 active:scale-95",
                 active 
                     ? "bg-primary/10 text-primary dark:bg-white/10 dark:text-white shadow-sm" 
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted dark:hover:text-white dark:hover:bg-white/5"
+                    : "text-foreground/50 dark:text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:text-white dark:hover:bg-white/5"
             )}
+
         >
             <Icon className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">{label}</span>

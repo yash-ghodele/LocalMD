@@ -447,12 +447,13 @@ export default function MarkdownViewer() {
             </main>
 
             {/* Mobile Navigation */}
-            <div className="md:hidden flex items-center justify-around p-3 bg-white/5 backdrop-blur-xl border-t border-white/10 z-50">
+            <div className="md:hidden flex items-center justify-around p-3 bg-white/80 dark:bg-white/5 backdrop-blur-xl border-t border-black/5 dark:border-white/10 z-50">
+
                 <button 
                     onClick={() => setViewMode("editor")}
                     className={cn(
                         "flex flex-col items-center gap-1 transition-all",
-                        viewMode === "editor" ? "text-primary scale-110" : "text-muted-foreground opacity-50"
+                        viewMode === "editor" ? "text-primary scale-110" : "text-foreground/40 dark:text-muted-foreground"
                     )}
                 >
                     <div className="text-[10px] font-bold uppercase tracking-tighter">Editor</div>
@@ -461,7 +462,7 @@ export default function MarkdownViewer() {
                     onClick={() => setViewMode("split")}
                     className={cn(
                         "flex flex-col items-center gap-1 transition-all",
-                        viewMode === "split" ? "text-primary scale-110" : "text-muted-foreground opacity-50"
+                        viewMode === "split" ? "text-primary scale-110" : "text-foreground/40 dark:text-muted-foreground"
                     )}
                 >
                     <div className="text-[10px] font-bold uppercase tracking-tighter">Split</div>
@@ -470,7 +471,7 @@ export default function MarkdownViewer() {
                     onClick={() => setViewMode("preview")}
                     className={cn(
                         "flex flex-col items-center gap-1 transition-all",
-                        viewMode === "preview" ? "text-primary scale-110" : "text-muted-foreground opacity-50"
+                        viewMode === "preview" ? "text-primary scale-110" : "text-foreground/40 dark:text-muted-foreground"
                     )}
                 >
                     <div className="text-[10px] font-bold uppercase tracking-tighter">Preview</div>
