@@ -452,10 +452,19 @@ export default function MarkdownViewer() {
                     onClick={() => setViewMode("editor")}
                     className={cn(
                         "flex flex-col items-center gap-1 transition-all",
-                        viewMode === "editor" || viewMode === "split" ? "text-primary scale-110" : "text-muted-foreground opacity-50"
+                        viewMode === "editor" ? "text-primary scale-110" : "text-muted-foreground opacity-50"
                     )}
                 >
                     <div className="text-[10px] font-bold uppercase tracking-tighter">Editor</div>
+                </button>
+                <button 
+                    onClick={() => setViewMode("split")}
+                    className={cn(
+                        "flex flex-col items-center gap-1 transition-all",
+                        viewMode === "split" ? "text-primary scale-110" : "text-muted-foreground opacity-50"
+                    )}
+                >
+                    <div className="text-[10px] font-bold uppercase tracking-tighter">Split</div>
                 </button>
                 <button 
                     onClick={() => setViewMode("preview")}
@@ -467,6 +476,7 @@ export default function MarkdownViewer() {
                     <div className="text-[10px] font-bold uppercase tracking-tighter">Preview</div>
                 </button>
             </div>
+
 
             {/* Table of Contents */}
             <div className="hidden md:block">
