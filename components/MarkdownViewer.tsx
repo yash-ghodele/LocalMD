@@ -447,34 +447,36 @@ export default function MarkdownViewer() {
             </main>
 
             {/* Mobile Navigation */}
-            <div className="md:hidden flex items-center justify-around p-3 bg-white/80 dark:bg-white/5 backdrop-blur-xl border-t border-black/5 dark:border-white/10 z-50">
-
+            <div className="md:hidden flex items-center justify-around p-3 pb-6 bg-white/90 dark:bg-black/40 backdrop-blur-2xl border-t border-black/5 dark:border-white/10 z-50 shadow-[0_-10px_30px_rgba(0,0,0,0.08)]">
                 <button 
                     onClick={() => setViewMode("editor")}
                     className={cn(
-                        "flex flex-col items-center gap-1 transition-all",
+                        "flex flex-col items-center gap-1.5 transition-all duration-300",
                         viewMode === "editor" ? "text-primary scale-110" : "text-foreground/40 dark:text-muted-foreground"
                     )}
                 >
-                    <div className="text-[10px] font-bold uppercase tracking-tighter">Editor</div>
+                    <FileText className="w-5 h-5" />
+                    <div className="text-[10px] font-bold uppercase tracking-widest">Editor</div>
                 </button>
                 <button 
                     onClick={() => setViewMode("split")}
                     className={cn(
-                        "flex flex-col items-center gap-1 transition-all",
+                        "flex flex-col items-center gap-1.5 transition-all duration-300",
                         viewMode === "split" ? "text-primary scale-110" : "text-foreground/40 dark:text-muted-foreground"
                     )}
                 >
-                    <div className="text-[10px] font-bold uppercase tracking-tighter">Split</div>
+                    <Columns className="w-5 h-5" />
+                    <div className="text-[10px] font-bold uppercase tracking-widest">Split</div>
                 </button>
                 <button 
                     onClick={() => setViewMode("preview")}
                     className={cn(
-                        "flex flex-col items-center gap-1 transition-all",
+                        "flex flex-col items-center gap-1.5 transition-all duration-300",
                         viewMode === "preview" ? "text-primary scale-110" : "text-foreground/40 dark:text-muted-foreground"
                     )}
                 >
-                    <div className="text-[10px] font-bold uppercase tracking-tighter">Preview</div>
+                    <Eye className="w-5 h-5" />
+                    <div className="text-[10px] font-bold uppercase tracking-widest">Preview</div>
                 </button>
             </div>
 

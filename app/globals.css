@@ -50,7 +50,7 @@
   }
  
   .task-list-item-checkbox {
-    @apply appearance-none w-4 h-4 rounded border border-white/20 bg-white/5 cursor-pointer transition-all relative mt-1 mr-2 flex-shrink-0;
+    @apply appearance-none w-4 h-4 rounded border border-black/10 dark:border-white/20 bg-black/5 dark:bg-white/5 cursor-pointer transition-all relative mt-1 mr-2 flex-shrink-0;
   }
   .task-list-item-checkbox:checked {
     @apply bg-primary border-primary shadow-[0_0_10px_rgba(139,92,246,0.3)];
@@ -137,7 +137,7 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 .glass-card {
