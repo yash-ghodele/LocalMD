@@ -21,8 +21,9 @@ Experience a state-of-the-art **Liquid Glassmorphism** editor designed for priva
 ## 📥 Smart Document Imports
 Transform your existing assets into clean Markdown instantly.
 - **PDF Transformation**: Drag and drop any PDF to extract structured text with heading detection.
+- **DOCX Integration**: Convert Microsoft Word files to semantic Markdown using Mammoth.js.
 - **PPTX Integration**: Import PowerPoint slides; titles and structure are automatically preserved.
-- **Drag & Drop**: Simply drop any \`.md\`, \`.pdf\`, or \`.pptx\` file anywhere on the workspace.
+- **Drag & Drop**: Simply drop any \`.md\`, \`.pdf\`, \`.docx\`, or \`.pptx\` file anywhere.
 
 ---
 
@@ -31,6 +32,7 @@ Transform your existing assets into clean Markdown instantly.
 | Action | Shortcut |
 | :--- | :--- |
 | **Open Local File** | \`Ctrl + O\` |
+| **Undo / Redo** | \`Ctrl + Z / Y\` |
 | **Save Changes** | \`Ctrl + S\` |
 | **Save As / New File** | \`Ctrl + Shift + S\` |
 | **Export Markdown** | \`Ctrl + M\` |
@@ -38,6 +40,7 @@ Transform your existing assets into clean Markdown instantly.
 | **Print / PDF Export** | \`Ctrl + P\` |
 | **Toggle View Layout** | \`Ctrl + /\` |
 | **Switch Visual Theme** | \`Ctrl + D\` |
+
 
 ---
 
