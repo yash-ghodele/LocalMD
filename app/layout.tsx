@@ -10,30 +10,48 @@ import { ThemeProvider } from "@/components/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Local Markdown Viewer",
-  description: "A fast, secure, and privacy-focused local-first Markdown viewer and editor. All your data stays on your device.",
-  keywords: ["Markdown", "Viewer", "Editor", "Local-first", "Privacy", "Developer Tools", "Next.js", "PWA"],
-  authors: [{ name: "Yash Ghodele", url: "https://github.com/yash-ghodele" }],
+  title: {
+    default: "LocalMD | Premium Local-First Markdown Architecture",
+    template: "%s | LocalMD"
+  },
+  description: "A state-of-the-art, privacy-focused Markdown editor with PDF/PPTX transformation, Mermaid diagrams, and LaTeX support. All processing happens 100% locally.",
+  keywords: [
+    "Markdown Editor", "Privacy-first Markdown", "Local-first Apps", 
+    "PDF to Markdown", "PPTX to Markdown", "Mermaid Diagrams", 
+    "LaTeX Editor", "PWA Markdown", "LocalMD", "Next.js Editor"
+  ],
+  authors: [{ name: "Yash Ghodele", url: "https://yash-ghodele.pages.dev" }],
   creator: "Yash Ghodele",
+  metadataBase: new URL("https://yash-ghodele.pages.dev/LocalMD"),
+
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://localmd.vercel.app",
-    title: "Local Markdown Viewer",
-    description: "Privacy-focused local-first Markdown viewer and editor",
-    siteName: "Local Markdown Viewer",
+    url: "https://yash-ghodele.pages.dev/LocalMD",
+    title: "LocalMD | Premium Local-First Markdown Architecture",
+    description: "Transform PDFs and PPTs into Markdown instantly. Private, fast, and local-first.",
+    siteName: "LocalMD",
+    images: [{
+      url: "/og-image.png",
+      width: 1200,
+      height: 630,
+      alt: "LocalMD Interface Preview"
+    }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Local Markdown Viewer",
-    description: "Privacy-focused local-first Markdown viewer and editor",
+    title: "LocalMD | Premium Local-First Markdown Architecture",
+    description: "The future of private, high-performance Markdown editing.",
+    images: ["/og-image.png"],
     creator: "@yash_ghodele",
   },
   icons: {
     icon: "/icon.png",
     apple: "/icon.png",
   },
+  manifest: "/manifest.json",
 };
+
 
 export default function RootLayout({
   children,
