@@ -6,10 +6,9 @@ Maximize your productivity with the Local Markdown Viewer.
 
 | Shortcut | Action |
 | :--- | :--- |
-| `Ctrl + O` | Open a local file (Markdown, PDF, PPTX) |
+| `Ctrl + O` | Open a local file (Markdown, PDF, DOCX, PPTX) |
 | `Ctrl + S` | Save current file (Save As for untitled docs) |
-| `Ctrl + Z` | **Undo** last edit (Tracks history across edits) |
-| `Ctrl + Y` | **Redo** last edit |
+| `Ctrl + Z / Y` | **Undo / Redo** last edit (Tracks 50-state history) |
 | `Ctrl + M` | Export as Markdown file |
 | `Ctrl + E` | Export as standalone HTML |
 | `Ctrl + P` | Print / Export as PDF (Clean layout) |
@@ -23,8 +22,9 @@ Maximize your productivity with the Local Markdown Viewer.
 
 ## 🖱️ Power Interactions
 
-- **Drag & Drop**: Drag any `.md`, `.markdown`, or `.txt` file anywhere onto the app window to open it instantly.
+- **Drag & Drop**: Drag any `.md`, `.pdf`, `.docx`, or `.pptx` file anywhere onto the app window to open or transform it instantly.
 - **Dynamic Split**: Drag the center divider bar left/right to resize the editor and preview panes (15%–85% range).
+- **Mobile Stacking**: On small screens, use the **bottom navigation bar** to toggle between Editor and Preview. In "Split" mode, the panes stack vertically (50/50) for a real-time mobile preview.
 - **Sync Scroll**: When enabled (chain-link icon in toolbar), scrolling either pane scrolls the other proportionally.
 - **Interactive Tasks**: Click any checkbox in the preview — the underlying Markdown source is updated automatically.
 - **Copy Code**: Hover over any code block in the preview to reveal a copy button.

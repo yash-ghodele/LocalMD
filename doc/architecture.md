@@ -23,10 +23,11 @@ A complete view of the project's technical structure, component roles, and data 
   theme-provider.tsx  → Thin next-themes ThemeProvider wrapper
 
 /hooks
-  useFileHandler.ts        → File I/O: open, save, saveAs, drag-drop, localStorage autosave
+  useFileHandler.ts        → Core state: open, save, drag-drop, localStorage, and 50-state undo/redo history stack
   useKeyboardShortcuts.ts  → Stable-ref global keyboard shortcuts (single listener, zero re-runs)
 
 /lib
+  importers.ts        → Transformation engine: PDF (pdfjs), PPTX (jszip), and Word (mammoth) extraction
   utils.ts            → cn() = clsx + tailwind-merge
 
 /types
@@ -40,8 +41,8 @@ A complete view of the project's technical structure, component roles, and data 
 `MarkdownViewer` is the single orchestrator — all state and actions flow through it:
 
 ```
-useFileHandler  →  content, fileName, isModified, fileHandle
-                   openFile, saveFile, saveFileAs, setContent, handleDrop
+useFileHandler  →  content, fileName, isModified, fileHandle, history, historyIndex
+                   openFile, saveFile, saveFileAs, setContent, handleDrop, undo, redo
        ↓
 MarkdownViewer  →  viewMode, splitPosition, isSyncScroll, isDragging, isResizing
        ↓                       ↓                           ↓

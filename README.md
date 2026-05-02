@@ -19,6 +19,7 @@ A state-of-the-art, privacy-focused local-first Markdown editor and transformati
 ### 📝 Editor & Architecture
 - **⏱️ Undo/Redo History**: Robust programmatic history engine — never lose an edit, even after complex toolbar transformations.
 - **📝 Split-Screen Editor**: Edit Markdown on the left, see live preview on the right with **Sync-Scroll**.
+- **📱 Responsive Stacking**: Optimized mobile navigation with a dedicated bottom bar and vertical split-stacking for tablets and phones.
 - **🎨 Liquid Glassmorphism**: Stunning, high-performance UI with premium blurring, gradients, and interactive animations.
 - **📑 Table of Contents**: Auto-generated floating TOC panel for instant document navigation.
 - **✅ Interactive Tasks**: Click task checkboxes in the preview — they update the source Markdown live.
@@ -72,7 +73,7 @@ A state-of-the-art, privacy-focused local-first Markdown editor and transformati
 | Language | [TypeScript 5](https://www.typescriptlang.org/) |
 | UI Library | [React 19](https://react.dev/) |
 | Styling | [Tailwind CSS 4](https://tailwindcss.com/) + `@tailwindcss/typography` |
-| Markdown | `react-markdown`, `remark-gfm`, `remark-math`, `remark-gemoji`, `remark-github-blockquote-alert` |
+| Markdown | `react-markdown`, `remark-gfm`, `remark-math`, `remark-gemoji`, `remark-github-blockquote-alert`, `mammoth` (Word) |
 | Math | `rehype-katex` + `KaTeX` |
 | Diagrams | [Mermaid](https://mermaid.js.org/) |
 | Code Highlighting | `rehype-highlight` (GitHub Dark theme) |
