@@ -42,8 +42,8 @@ export function Toolbar({
     return (
         <div className="flex items-center justify-center pt-4 sticky top-0 z-50 pointer-events-none">
             <div className="flex items-center gap-4 px-6 py-2.5 glass rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-white/10 pointer-events-auto transition-all duration-500 hover:scale-[1.02] hover:shadow-primary/20">
-                <div className="flex items-center gap-3 pr-4 border-r border-black/5 dark:border-white/10">
-                    <Image src="/icon.png" alt="App Icon" width={28} height={28} className="rounded-lg shadow-lg" />
+                <div className="flex items-center gap-2 md:gap-3 pr-2 md:pr-4 border-r border-black/5 dark:border-white/10">
+                    <Image src="/icon.png" alt="App Icon" width={24} height={24} className="rounded-lg shadow-lg md:w-[28px] md:h-[28px]" />
                     <h1 className="text-xs font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-[var(--logo-from)] to-[var(--logo-to)] hidden lg:block uppercase italic">Local MD</h1>
                 </div>
 
@@ -51,17 +51,17 @@ export function Toolbar({
                     <button
                         onClick={onOpenFile}
                         disabled={isImporting}
-                        className="flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl bg-primary text-primary-foreground hover:shadow-lg hover:shadow-primary/40 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex items-center gap-2 px-2.5 md:px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl bg-primary text-primary-foreground hover:shadow-lg hover:shadow-primary/40 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                         title="Open File (Ctrl+O)"
                     >
                         <FileUp className="w-3.5 h-3.5" />
-                        <span className="hidden sm:inline">Open</span>
+                        <span className="hidden md:inline">Open</span>
                     </button>
 
                     <button
                         onClick={onImportFile}
                         disabled={isImporting}
-                        className="flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex items-center gap-2 px-2.5 md:px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                         title="Import PDF/DOCX/PPTX"
                     >
                         {isImporting ? (
@@ -69,14 +69,14 @@ export function Toolbar({
                         ) : (
                             <FilePlus className="w-3.5 h-3.5" />
                         )}
-                        <span className="hidden sm:inline">{isImporting ? "Importing..." : "Import"}</span>
+                        <span className="hidden md:inline">{isImporting ? "Importing..." : "Import"}</span>
                     </button>
 
                     {/* Save button — shown only when there is content to save */}
                     <button
                         onClick={onSaveFile}
                         className={cn(
-                            "flex items-center gap-2 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl transition-all active:scale-95",
+                            "flex items-center gap-2 px-2.5 md:px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl transition-all active:scale-95",
                             isModified
                                 ? "bg-amber-500/20 text-amber-500 hover:bg-amber-500/30 border border-amber-500/30"
                                 : "text-muted-foreground hover:bg-white/5 border border-transparent"
@@ -84,10 +84,10 @@ export function Toolbar({
                         title={hasFileHandle ? "Save (Ctrl+S)" : "Save As (Ctrl+S)"}
                     >
                         <Save className="w-3.5 h-3.5" />
-                        <span className="hidden sm:inline">{hasFileHandle ? "Save" : "Save As"}</span>
+                        <span className="hidden md:inline">{hasFileHandle ? "Save" : "Save As"}</span>
                     </button>
 
-                    <div className="flex bg-muted/50 dark:bg-white/5 rounded-xl p-1 border border-black/5 dark:border-white/5">
+                    <div className="hidden md:flex bg-muted/50 dark:bg-white/5 rounded-xl p-1 border border-black/5 dark:border-white/5">
                         <ViewToggle
                             active={viewMode === "editor"}
                             onClick={() => setViewMode("editor")}
@@ -109,10 +109,10 @@ export function Toolbar({
                     </div>
                 </div>
 
-                <div className="h-6 w-px bg-black/5 dark:bg-white/10 mx-1" />
+                <div className="hidden lg:block h-6 w-px bg-black/5 dark:bg-white/10 mx-1" />
 
-                <div className="flex items-center gap-2">
-                    <div className="flex items-center bg-muted/50 dark:bg-white/5 rounded-xl border border-black/5 dark:border-white/5 overflow-hidden">
+                <div className="flex items-center gap-1 md:gap-2">
+                    <div className="hidden lg:flex items-center bg-muted/50 dark:bg-white/5 rounded-xl border border-black/5 dark:border-white/5 overflow-hidden">
                         <button
                             onClick={onExportMarkdown}
                             className="p-2 text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-all"
