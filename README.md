@@ -1,6 +1,6 @@
-# LocalMD | Premium Local-First Markdown Architecture
+# LocalMD | Local-First Knowledge Transformation Platform
 
-A state-of-the-art, privacy-focused local-first Markdown editor and transformation engine built with Next.js 16. All your data stays on your device — no servers, no tracking, no cloud storage.
+A state-of-the-art, privacy-focused local-first knowledge transformation platform built with Next.js 16. Convert locked, proprietary document formats (PDF, DOCX, PPTX) into structured, portable, AI-ready Markdown — entirely on-device with zero cloud dependency.
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Next.js](https://img.shields.io/badge/Next.js-16-black)
@@ -8,85 +8,74 @@ A state-of-the-art, privacy-focused local-first Markdown editor and transformati
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8)
 
-## ✨ Premium Features
+---
 
-### 🚀 Advanced Document Transformation
-- **📄 PDF to Markdown**: High-fidelity text extraction with intelligent heading detection and structural preservation.
-- **📝 Word to Markdown**: Convert `.docx` files to semantic Markdown instantly using Mammoth.js.
-- **📊 PPTX to Markdown**: Transform PowerPoint presentations into structured Markdown slides instantly.
-- **🔄 Smart Drag & Drop**: Drop any `.md`, `.pdf`, `.docx`, or `.pptx` file directly onto the window for instant conversion.
+## ✨ Core Pillars (v2)
 
-### 📝 Editor & Architecture
-- **⏱️ Undo/Redo History**: Robust programmatic history engine — never lose an edit, even after complex toolbar transformations.
-- **📝 Split-Screen Editor**: Edit Markdown on the left, see live preview on the right with **Sync-Scroll**.
-- **📱 Responsive Stacking**: Optimized mobile navigation with a dedicated bottom bar and vertical split-stacking for tablets and phones.
-- **🎨 Liquid Glassmorphism**: Stunning, high-performance UI with premium blurring, gradients, and interactive animations.
-- **📑 Table of Contents**: Auto-generated floating TOC panel for instant document navigation.
-- **✅ Interactive Tasks**: Click task checkboxes in the preview — they update the source Markdown live.
+### 🚀 On-Device Document Transformation
+- **📄 PDF to Markdown**: Coordinate-aware line sorting, automatic heading level inference (`#`, `##`, `###`), list formatting, and LaTeX math detection via local `/pdf.worker.min.mjs` (0 external CDN calls).
+- **📝 Word (.docx) to Markdown**: High-fidelity semantic conversion preserving headings, bold/italics, and tables using Mammoth.js.
+- **📊 PowerPoint (.pptx) to Markdown**: Slide-by-slide sectioning, tables, hierarchical indented bullet points, and extracted **speaker notes**.
+- **📦 Multi-File Batch Mode**: Drop or import multiple documents simultaneously to produce a structured **Batch Knowledge Bundle** with an aggregated fidelity report.
 
-### 📊 Rendering Engine
-- **📐 LaTeX & Math**: Professional math formulas rendered with `KaTeX`.
-- **📊 Mermaid Diagrams**: Flowcharts, sequence diagrams, and more — live and theme-aware.
-- **📋 Premium Tables**: Glass-style tables with striped rows, hover highlights, and rounded architecture.
-- **🎯 Syntax Highlighting**: Beautiful code blocks with GitHub Dark theme and hover-copy support.
+### 🧠 AI-Readiness & Structure Intelligence
+- **⏱️ Live Token Estimation**: Real-time token counter calibrated against GPT-4, Claude, and Llama tokenizers (~3.85–4 chars/token heuristic).
+- **📊 Deterministic Structure Score**: 100-point rubric inspecting Heading Hierarchy (30 pts), Section Granularity (25 pts), Semantic Richness (25 pts), and Formatting Hygiene (20 pts).
+- **⚡ 1-Click AI Context Package (`Ctrl + Shift + C`)**: Instant copy format wrapped in an inspectable `<document>` XML envelope with an auto-generated structural outline and file metadata.
+- **📋 Conversion Fidelity & Degradation Reports**: Real-time telemetry disclosing preserved elements (headings, tables, math, speaker notes) and honest degradation warnings (e.g., scanned un-OCRable pages, multi-column linearization).
 
-### 🔒 Privacy & Performance
-- **🔐 100% Local**: All processing happens in-browser. No analytics, no data collection.
-- **⚡ Offline-First**: PWA support with local storage sync and service worker caching.
-- **💾 Native File System**: Direct read/write access via the File System Access API.
+### 🎨 Premium Workspace & Rendering Suite
+- **⏱️ 50-Step Programmatic Undo/Redo**: Deep history engine preserves your edits even after complex toolbar operations.
+- **📐 Scientific LaTeX**: Live rendering of complex mathematical notations with KaTeX.
+- **📊 Mermaid Diagrams**: Live, theme-aware architecture diagrams, sequence maps, and flowcharts.
+- **📋 Liquid Glassmorphism**: High-performance UI with frosted glass design, hover highlights, and custom scrollbars.
+- **📑 Table of Contents**: Floating navigation drawer auto-indexed from `#` to `######` headers.
+- **✅ Interactive Task Lists**: Toggle checkboxes in the preview to update raw Markdown in real time.
+
+### 🔒 100% Zero-Cloud Trust & Sovereignty
+- **🔐 True Device-Only Execution**: Zero outbound network requests during document conversion; 0 telemetry or third-party analytics scripts.
+- **⚡ Offline-First PWA**: Service workers cache assets locally for air-gapped operation.
+- **💾 Native File System**: Direct read/write to local disk files via the Web File System Access API.
 
 ---
 
-### ⌨️ Global Keyboard Shortcuts
+## ⌨️ Global Keyboard Shortcuts
 
 | Shortcut | Action |
 | :--- | :--- |
-| `Ctrl + O` | Open a local file (Markdown, PDF, DOCX, PPTX) |
+| `Ctrl + O` | Open local file (Markdown, PDF, DOCX, PPTX) |
 | `Ctrl + S` | Save current file (Save As for untitled docs) |
-| `Ctrl + Z / Y` | **Undo / Redo** last edit |
+| `Ctrl + Shift + S` | Save As new file |
+| `Ctrl + Shift + C` | **AI Context Package & Structure Score** |
+| `Ctrl + Z / Ctrl + Y` | **Undo / Redo** last edit |
 | `Ctrl + M` | Export as Markdown file |
 | `Ctrl + E` | Export as standalone HTML |
-| `Ctrl + P` | Print / Export as PDF |
-| `Ctrl + /` | Toggle Split/Editor/Preview View |
-| `Ctrl + D` | Toggle Dark/Light Theme |
-
-
----
-
-## 📖 Usage
-
-1. **Open a File** — Click **Open** in the toolbar, press `Ctrl+O`, or drag a `.md` file onto the window
-2. **Edit** — Write Markdown in the left pane; the right pane updates live
-3. **Resize** — Drag the center divider to adjust the editor/preview split
-4. **Save** — Click **Save** (amber when unsaved), or press `Ctrl+S`; `Ctrl+Shift+S` to save to a new file
-5. **Export** — Click the download icon for HTML, or the file icon for PDF
-6. **Navigate** — Click the list icon (bottom-right) to open the Table of Contents
-7. **Theme** — Click ☀️/🌙 in the toolbar or press `Ctrl+D`
+| `Ctrl + P` | Print / Export as vector PDF |
+| `Ctrl + /` | Toggle Split / Editor / Preview View |
+| `Ctrl + D` | Toggle Dark / Light Theme |
 
 ---
 
 ## 🛠️ Tech Stack
 
 | Layer | Technology |
-|-------|-----------|
-| Framework | [Next.js 16](https://nextjs.org/) (App Router, Webpack) |
-| Language | [TypeScript 5](https://www.typescriptlang.org/) |
-| UI Library | [React 19](https://react.dev/) |
-| Styling | [Tailwind CSS 4](https://tailwindcss.com/) + `@tailwindcss/typography` |
-| Markdown | `react-markdown`, `remark-gfm`, `remark-math`, `remark-gemoji`, `remark-github-blockquote-alert`, `mammoth` (Word) |
-| Math | `rehype-katex` + `KaTeX` |
-| Diagrams | [Mermaid](https://mermaid.js.org/) |
-| Code Highlighting | `rehype-highlight` (GitHub Dark theme) |
-| Icons | [Lucide React](https://lucide.dev/) |
-| Theme | [next-themes](https://github.com/pacocoursey/next-themes) |
-| PWA | [@ducanh2912/next-pwa](https://github.com/DuCanhGH/next-pwa) |
+|---|---|
+| **Framework** | Next.js 16.1.6 (App Router, Webpack) |
+| **Language** | TypeScript 5 |
+| **UI Library** | React 19.2.3 |
+| **Styling** | Tailwind CSS 4 + `@tailwindcss/typography` + Liquid Glassmorphism |
+| **Markdown Pipeline** | `react-markdown`, `remark-gfm`, `remark-math`, `remark-gemoji`, `remark-github-blockquote-alert` |
+| **Document Parsers** | `pdfjs-dist` (local worker), `mammoth` (Word), `jszip` (PowerPoint) |
+| **Math & Diagrams** | `katex`, `rehype-katex`, `mermaid` |
+| **Code Highlighting** | `rehype-highlight` (GitHub Dark theme) |
+| **PWA & Theming** | `@ducanh2912/next-pwa`, `next-themes`, `lucide-react` |
 
 ---
 
 ## 📁 Project Structure
 
 ```
-markdown-viewer/
+LocalMD/
 ├── app/
 │   ├── globals.css           # Tailwind v4 design system + glassmorphism tokens + print styles
 │   ├── github-alerts.css     # GitHub-style blockquote alert styles
@@ -94,70 +83,31 @@ markdown-viewer/
 │   ├── manifest.ts           # PWA manifest
 │   └── page.tsx              # Entry point — renders <MarkdownViewer />
 ├── components/
-│   ├── MarkdownViewer.tsx    # Core orchestrator: layout, resizing, drag-drop, exports
-│   ├── MarkdownPreview.tsx   # Markdown → HTML render pipeline
-│   ├── Toolbar.tsx           # Floating toolbar: open, save, view modes, export, theme
+│   ├── MarkdownViewer.tsx    # Core orchestrator: layout, live stats, batch drop, shortcuts
+│   ├── MarkdownPreview.tsx   # Markdown → HTML render pipeline with Mermaid & KaTeX
+│   ├── Toolbar.tsx           # Floating toolbar: transform, fidelity, AI context, exports
 │   ├── EditorToolbar.tsx     # Markdown formatting insertion buttons
+│   ├── FidelityReportModal.tsx # Post-conversion fidelity & degradation telemetry modal
+│   ├── TrustCenterModal.tsx  # In-app zero-backend & privacy audit modal
+│   ├── AIContextModal.tsx    # Structure Score breakdown & AI context copy modal
 │   ├── MermaidDiagram.tsx    # Theme-aware Mermaid SVG renderer
-│   ├── TableOfContents.tsx   # Auto-generated TOC floating panel
+│   ├── TableOfContents.tsx   # Auto-generated TOC floating drawer
 │   └── theme-provider.tsx    # next-themes wrapper
 ├── hooks/
-│   ├── useFileHandler.ts     # File open, save, save-as, drag-drop, autosave
+│   ├── useFileHandler.ts     # Batch imports, File System Access API, autosave, undo/redo
 │   └── useKeyboardShortcuts.ts # Global keyboard shortcut bindings
 ├── lib/
+│   ├── aiReadiness.ts        # Deterministic 100-pt Structure Score & AI Context generator
+│   ├── importers.ts          # Local PDF, DOCX, and PPTX transformation engines
 │   └── utils.ts              # cn() utility (clsx + tailwind-merge)
-├── types/
-│   └── file-system.d.ts      # TypeScript declarations for File System Access API
 └── public/
-    ├── icon.png              # PWA icon
-    └── sw.js                 # Generated service worker (production only)
+    ├── icon.png              # App icon
+    ├── pdf.worker.min.mjs    # Local PDF.js worker (0 CDN calls)
+    └── sw.js                 # Generated service worker (production)
 ```
-
----
-
-## 🌐 Browser Support
-
-| Feature | Chrome | Edge | Firefox | Safari |
-|---------|--------|------|---------|--------|
-| Basic Viewer & Editor | ✅ | ✅ | ✅ | ✅ |
-| File System Access API (Open/Save) | ✅ | ✅ | ⚠️ | ⚠️ |
-| Save As dialog | ✅ | ✅ | ⚠️ | ⚠️ |
-| PWA Install | ✅ | ✅ | ❌ | ✅ |
-
-*⚠️ = Falls back gracefully to standard `<input type="file">` / blob download*
-
----
-
-## 🔐 Privacy & Security
-
-- **No Server**: Everything runs in your browser — zero backend
-- **No Analytics**: No tracking, telemetry, or third-party scripts
-- **No Cloud**: Your files never leave your device
-- **No Network after Load**: Works fully offline once the PWA is cached
-
----
-
-## 📝 License
-
-MIT License — see [LICENSE](LICENSE) for details.
-
-## 🤝 Contributing
-
-Contributions are welcome! Feel free to report bugs, suggest features, or submit pull requests.
-
-## 👨‍💻 Author
-
-**Yash Ghodele**
-- **Portfolio**: [yash-ghodele.pages.dev](https://yash-ghodele.pages.dev/)
-- **Organization**: Founder @ [Ugam Digital Studio](https://ugamstudio.vercel.app/)
-- **GitHub**: [@yash-ghodele](https://github.com/yash-ghodele)
 
 ---
 
 ## 📜 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-### 🚀 Built with Passion for the Local-First Future.
+MIT License — see [LICENSE](LICENSE) for details. Built by **Yash Ghodele** / **Ugam Digital Studio**.
