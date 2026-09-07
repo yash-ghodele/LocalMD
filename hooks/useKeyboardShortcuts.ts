@@ -13,14 +13,11 @@ interface KeyboardShortcutsConfig {
     onExportPdf?: () => void;
     onToggleView?: () => void;
     onToggleTheme?: () => void;
+    onOpenAIContext?: () => void;
 }
 
 export function useKeyboardShortcuts(config: KeyboardShortcutsConfig) {
-    // Store latest callbacks in a ref so the effect never needs to re-run
-    // when the caller re-creates the config object on each render.
     const configRef = useRef(config);
-    // useLayoutEffect runs synchronously after each render, before paint —
-    // this satisfies react-hooks/refs while keeping configRef always up to date.
     useLayoutEffect(() => {
         configRef.current = config;
     });
@@ -29,8 +26,14 @@ export function useKeyboardShortcuts(config: KeyboardShortcutsConfig) {
         const handleKeyDown = (e: KeyboardEvent) => {
             const ctrl = e.ctrlKey || e.metaKey;
 
+            // Ctrl/Cmd + Shift + C: AI Context & Structure Score
+            if (ctrl && e.shiftKey && e.key === "C") {
+                e.preventDefault();
+                configRef.current.onOpenAIContext?.();
+            }
+
             // Ctrl/Cmd + O: Open file
-            if (ctrl && e.key === "o") {
+            if (ctrl && !e.shiftKey && e.key === "o") {
                 e.preventDefault();
                 configRef.current.onOpen?.();
             }
@@ -60,19 +63,19 @@ export function useKeyboardShortcuts(config: KeyboardShortcutsConfig) {
             }
 
             // Ctrl/Cmd + E: Export HTML
-            if (ctrl && e.key === "e") {
+            if (ctrl && !e.shiftKey && e.key === "e") {
                 e.preventDefault();
                 configRef.current.onExportHtml?.();
             }
 
             // Ctrl/Cmd + M: Export Markdown
-            if (ctrl && e.key === "m") {
+            if (ctrl && !e.shiftKey && e.key === "m") {
                 e.preventDefault();
                 configRef.current.onExportMarkdown?.();
             }
 
             // Ctrl/Cmd + P: Export PDF/Print
-            if (ctrl && e.key === "p") {
+            if (ctrl && !e.shiftKey && e.key === "p") {
                 e.preventDefault();
                 configRef.current.onExportPdf?.();
             }
@@ -84,7 +87,7 @@ export function useKeyboardShortcuts(config: KeyboardShortcutsConfig) {
             }
 
             // Ctrl/Cmd + D: Toggle dark mode
-            if (ctrl && e.key === "d") {
+            if (ctrl && !e.shiftKey && e.key === "d") {
                 e.preventDefault();
                 configRef.current.onToggleTheme?.();
             }
@@ -92,5 +95,5 @@ export function useKeyboardShortcuts(config: KeyboardShortcutsConfig) {
 
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, []); // Empty deps — runs once, always reads latest via ref
+    }, []);
 }

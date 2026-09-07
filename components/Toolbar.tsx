@@ -2,7 +2,23 @@
 
 import React from "react";
 import Image from "next/image";
-import { Moon, Sun, FileText, Columns, Eye, Download, FileUp, Save, Link as LinkIcon, FilePlus, Loader2, FileDown } from "lucide-react";
+import { 
+    Moon, 
+    Sun, 
+    FileText, 
+    Columns, 
+    Eye, 
+    Download, 
+    FileUp, 
+    Save, 
+    Link as LinkIcon, 
+    FilePlus, 
+    Loader2, 
+    FileDown,
+    Sparkles,
+    ShieldCheck,
+    FileCheck2
+} from "lucide-react";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +29,10 @@ interface ToolbarProps {
     onExportMarkdown: () => void;
     onExportHtml: () => void;
     onExportPdf: () => void;
+    onOpenAIContext: () => void;
+    onOpenTrustCenter: () => void;
+    onOpenFidelityReport?: () => void;
+    hasFidelityReport?: boolean;
     viewMode: "split" | "editor" | "preview";
     setViewMode: (mode: "split" | "editor" | "preview") => void;
     isSyncScroll?: boolean;
@@ -29,6 +49,10 @@ export function Toolbar({
     onExportMarkdown,
     onExportHtml,
     onExportPdf,
+    onOpenAIContext,
+    onOpenTrustCenter,
+    onOpenFidelityReport,
+    hasFidelityReport,
     viewMode,
     setViewMode,
     isSyncScroll,
@@ -41,18 +65,20 @@ export function Toolbar({
 
     return (
         <div className="flex items-center justify-center pt-4 sticky top-0 z-50 pointer-events-none">
-            <div className="flex items-center gap-4 px-6 py-2.5 glass rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-white/10 pointer-events-auto transition-all duration-500 hover:scale-[1.02] hover:shadow-primary/20">
+            <div className="flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2.5 glass rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-white/10 pointer-events-auto transition-all duration-500 hover:scale-[1.01] hover:shadow-primary/20">
+                {/* Brand / Logo */}
                 <div className="flex items-center gap-2 md:gap-3 pr-2 md:pr-4 border-r border-black/5 dark:border-white/10">
                     <Image src="/icon.png" alt="App Icon" width={24} height={24} className="rounded-lg shadow-lg md:w-[28px] md:h-[28px]" />
                     <h1 className="text-xs font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-[var(--logo-from)] to-[var(--logo-to)] hidden lg:block uppercase italic">Local MD</h1>
                 </div>
 
-                <div className="flex items-center gap-2">
+                {/* Primary Action Buttons */}
+                <div className="flex items-center gap-1.5 md:gap-2">
                     <button
                         onClick={onOpenFile}
                         disabled={isImporting}
-                        className="flex items-center gap-2 px-2.5 md:px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl bg-primary text-primary-foreground hover:shadow-lg hover:shadow-primary/40 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                        title="Open File (Ctrl+O)"
+                        className="flex items-center gap-1.5 px-2.5 md:px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl bg-primary text-primary-foreground hover:shadow-lg hover:shadow-primary/40 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                        title="Open Local Markdown (Ctrl+O)"
                     >
                         <FileUp className="w-3.5 h-3.5" />
                         <span className="hidden md:inline">Open</span>
@@ -61,22 +87,22 @@ export function Toolbar({
                     <button
                         onClick={onImportFile}
                         disabled={isImporting}
-                        className="flex items-center gap-2 px-2.5 md:px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                        title="Import PDF/DOCX/PPTX"
+                        className="flex items-center gap-1.5 px-2.5 md:px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                        title="Import PDF, Word (.docx), or PPTX"
                     >
                         {isImporting ? (
                             <Loader2 className="w-3.5 h-3.5 animate-spin" />
                         ) : (
                             <FilePlus className="w-3.5 h-3.5" />
                         )}
-                        <span className="hidden md:inline">{isImporting ? "Importing..." : "Import"}</span>
+                        <span className="hidden md:inline">{isImporting ? "Transforming..." : "Transform"}</span>
                     </button>
 
-                    {/* Save button — shown only when there is content to save */}
+                    {/* Save Button */}
                     <button
                         onClick={onSaveFile}
                         className={cn(
-                            "flex items-center gap-2 px-2.5 md:px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl transition-all active:scale-95",
+                            "flex items-center gap-1.5 px-2.5 md:px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl transition-all active:scale-95",
                             isModified
                                 ? "bg-amber-500/20 text-amber-500 hover:bg-amber-500/30 border border-amber-500/30"
                                 : "text-muted-foreground hover:bg-white/5 border border-transparent"
@@ -87,6 +113,7 @@ export function Toolbar({
                         <span className="hidden md:inline">{hasFileHandle ? "Save" : "Save As"}</span>
                     </button>
 
+                    {/* View Switchers */}
                     <div className="hidden md:flex bg-muted/50 dark:bg-white/5 rounded-xl p-1 border border-black/5 dark:border-white/5">
                         <ViewToggle
                             active={viewMode === "editor"}
@@ -111,31 +138,54 @@ export function Toolbar({
 
                 <div className="hidden lg:block h-6 w-px bg-black/5 dark:bg-white/10 mx-1" />
 
-                <div className="flex items-center gap-1 md:gap-2">
+                {/* AI-Readiness & Trust Tools */}
+                <div className="flex items-center gap-1 md:gap-1.5">
+                    {/* Copy as AI Context button */}
+                    <button
+                        onClick={onOpenAIContext}
+                        className="flex items-center gap-1.5 px-2.5 md:px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20 hover:bg-purple-500/20 hover:shadow-lg hover:shadow-purple-500/20 transition-all active:scale-95"
+                        title="AI Context & Structure Score (Ctrl+Shift+C)"
+                    >
+                        <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                        <span className="hidden md:inline">AI Context</span>
+                    </button>
+
+                    {/* Fidelity Report Button */}
+                    <button
+                        onClick={onOpenFidelityReport}
+                        className="flex items-center gap-1.5 px-2.5 md:px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 hover:bg-cyan-500/20 hover:shadow-lg hover:shadow-cyan-500/20 transition-all active:scale-95"
+                        title="Document Conversion & Fidelity Report"
+                    >
+                        <FileCheck2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span className="hidden md:inline">Fidelity</span>
+                    </button>
+
+                    {/* Export Menu */}
                     <div className="hidden lg:flex items-center bg-muted/50 dark:bg-white/5 rounded-xl border border-black/5 dark:border-white/5 overflow-hidden">
                         <button
                             onClick={onExportMarkdown}
                             className="p-2 text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-all"
-                            title="Export as Markdown"
+                            title="Export as Markdown (Ctrl+M)"
                         >
                             <FileDown className="w-4 h-4" />
                         </button>
                         <button
                             onClick={onExportHtml}
                             className="p-2 text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-all border-l border-black/5 dark:border-white/10"
-                            title="Export as HTML"
+                            title="Export as Standalone HTML (Ctrl+E)"
                         >
                             <Download className="w-4 h-4" />
                         </button>
                         <button
                             onClick={onExportPdf}
-                            className="p-2 text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-all border-l border-black/5 dark:border-white/5"
-                            title="Export as PDF"
+                            className="p-2 text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-all border-l border-black/5 dark:border-white/10"
+                            title="Print / Export as PDF (Ctrl+P)"
                         >
                             <FileText className="w-4 h-4" />
                         </button>
                     </div>
 
+                    {/* Sync Scroll Toggle */}
                     {setIsSyncScroll && (
                         <button
                             onClick={() => setIsSyncScroll(!isSyncScroll)}
@@ -145,12 +195,13 @@ export function Toolbar({
                                     ? "bg-primary/10 text-primary border-primary/20"
                                     : "text-muted-foreground hover:bg-muted bg-muted/30 border-black/5 dark:border-white/5 dark:bg-white/5 dark:hover:bg-white/10"
                             )}
-                            title={isSyncScroll ? "Sync Scroll On" : "Sync Scroll Off"}
+                            title={isSyncScroll ? "Sync Scroll Enabled" : "Sync Scroll Disabled"}
                         >
                             <LinkIcon className="h-4 w-4" />
                         </button>
                     )}
 
+                    {/* Theme Switcher */}
                     <div className="flex items-center bg-muted/50 dark:bg-white/5 rounded-xl border border-black/5 dark:border-white/5 p-1 gap-1">
                         <button
                             onClick={() => setTheme("light")}
@@ -161,7 +212,7 @@ export function Toolbar({
                                     ? "bg-white text-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.2)] border border-black/5" 
                                     : "text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5"
                             )}
-                            title="Light Mode"
+                            title="Light Mode (Ctrl+D)"
                         >
                             <Sun className="h-3.5 w-3.5" />
                         </button>
@@ -174,7 +225,7 @@ export function Toolbar({
                                     ? "bg-primary text-white shadow-[0_0_20px_rgba(139,92,246,0.4)]" 
                                     : "text-muted-foreground hover:text-white hover:bg-white/5"
                             )}
-                            title="Dark Mode"
+                            title="Dark Mode (Ctrl+D)"
                         >
                             <Moon className="h-3.5 w-3.5" />
                         </button>
@@ -200,12 +251,11 @@ function ViewToggle({
         <button
             onClick={onClick}
             className={cn(
-                "px-4 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg transition-all flex items-center gap-2 active:scale-95",
+                "px-3 md:px-4 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg transition-all flex items-center gap-1.5 active:scale-95",
                 active 
                     ? "bg-primary/10 text-primary dark:bg-white/10 dark:text-white shadow-sm" 
                     : "text-foreground/50 dark:text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:text-white dark:hover:bg-white/5"
             )}
-
         >
             <Icon className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">{label}</span>
