@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { extractTextFromPDF, extractTextFromPPTX, extractTextFromDOCX } from "@/lib/importers";
+import { 
+    extractTextFromPDF, 
+    extractTextFromPPTX, 
+    extractTextFromDOCX, 
+    ConversionFidelityReport 
+} from "@/lib/importers";
+import { calculateStructureScore, estimateTokens } from "@/lib/aiReadiness";
 
 export interface FileHandlerState {
     content: string;
@@ -16,6 +22,8 @@ const AUTOSAVE_DELAY = 2000; // 2 seconds
 export function useFileHandler(initialContent: string) {
     const [isImporting, setIsImporting] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
+    const [fidelityReport, setFidelityReport] = useState<ConversionFidelityReport | null>(null);
+    const [isFidelityModalOpen, setIsFidelityModalOpen] = useState(false);
     const [state, setState] = useState<FileHandlerState>({
         content: initialContent,
         fileHandle: null,
@@ -71,7 +79,6 @@ export function useFileHandler(initialContent: string) {
         return () => clearTimeout(timer);
     }, [state.content, state.fileName, isMounted]);
 
-
     const [history, setHistory] = useState<string[]>([]);
     const [historyIndex, setHistoryIndex] = useState(-1);
 
@@ -82,10 +89,7 @@ export function useFileHandler(initialContent: string) {
             if (!skipHistory) {
                 setHistory(prevHistory => {
                     const nextHistory = prevHistory.slice(0, historyIndex + 1);
-                    // Only add to history if it's significantly different or after a pause
-                    // For simplicity, we add all programmatic changes here
                     nextHistory.push(newContent);
-                    // Cap history at 50 items
                     if (nextHistory.length > 50) nextHistory.shift();
                     setHistoryIndex(nextHistory.length - 1);
                     return nextHistory;
@@ -126,12 +130,147 @@ export function useFileHandler(initialContent: string) {
         }
     }, [history, historyIndex]);
 
+    /**
+     * Process an array of files (supports batch conversions)
+     */
+    const processFiles = useCallback(async (files: File[]) => {
+        if (!files || files.length === 0) return;
+        setIsImporting(true);
+
+        try {
+            if (files.length === 1) {
+                const file = files[0];
+                const isMD = file.name.endsWith(".md") || file.name.endsWith(".markdown") || file.name.endsWith(".txt");
+                const isPDF = file.name.endsWith(".pdf");
+                const isPPTX = file.name.endsWith(".pptx");
+                const isDOCX = file.name.endsWith(".docx");
+
+                if (isMD) {
+                    const text = await file.text();
+                    setState({
+                        content: text,
+                        fileHandle: null,
+                        fileName: file.name,
+                        isModified: false,
+                    });
+                    setFidelityReport(null);
+                } else if (isPDF) {
+                    const result = await extractTextFromPDF(file);
+                    setState({
+                        content: result.markdown,
+                        fileHandle: null,
+                        fileName: file.name.replace(/\.pdf$/i, ".md"),
+                        isModified: true,
+                    });
+                    setFidelityReport(result.report);
+                    setIsFidelityModalOpen(true);
+                } else if (isPPTX) {
+                    const result = await extractTextFromPPTX(file);
+                    setState({
+                        content: result.markdown,
+                        fileHandle: null,
+                        fileName: file.name.replace(/\.pptx$/i, ".md"),
+                        isModified: true,
+                    });
+                    setFidelityReport(result.report);
+                    setIsFidelityModalOpen(true);
+                } else if (isDOCX) {
+                    const result = await extractTextFromDOCX(file);
+                    setState({
+                        content: result.markdown,
+                        fileHandle: null,
+                        fileName: file.name.replace(/\.docx$/i, ".md"),
+                        isModified: true,
+                    });
+                    setFidelityReport(result.report);
+                    setIsFidelityModalOpen(true);
+                }
+            } else {
+                // Multi-file batch transformation
+                let combinedMarkdown = `# 📦 LocalMD Batch Knowledge Bundle\n\nConverted ${files.length} documents on-device with zero cloud telemetry.\n\n---\n\n`;
+                let totalHeadings = 0;
+                let totalTables = 0;
+                let totalLists = 0;
+                let totalMath = 0;
+                let totalSlidesOrPages = 0;
+                const batchWarnings: string[] = [];
+
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    combinedMarkdown += `# Document ${i + 1}: ${file.name}\n\n`;
+
+                    if (file.name.endsWith(".pdf")) {
+                        const res = await extractTextFromPDF(file);
+                        combinedMarkdown += res.markdown + "\n\n---\n\n";
+                        totalHeadings += res.report.headingsPreserved;
+                        totalTables += res.report.tablesPreserved;
+                        totalLists += res.report.listsPreserved;
+                        totalMath += res.report.mathExpressionsDetected;
+                        totalSlidesOrPages += res.report.pageOrSlideCount || 0;
+                        if (res.report.degradationsAndWarnings.length > 0) {
+                            batchWarnings.push(`${file.name}: ${res.report.degradationsAndWarnings.join("; ")}`);
+                        }
+                    } else if (file.name.endsWith(".pptx")) {
+                        const res = await extractTextFromPPTX(file);
+                        combinedMarkdown += res.markdown + "\n\n---\n\n";
+                        totalHeadings += res.report.headingsPreserved;
+                        totalTables += res.report.tablesPreserved;
+                        totalLists += res.report.listsPreserved;
+                        totalSlidesOrPages += res.report.pageOrSlideCount || 0;
+                    } else if (file.name.endsWith(".docx")) {
+                        const res = await extractTextFromDOCX(file);
+                        combinedMarkdown += res.markdown + "\n\n---\n\n";
+                        totalHeadings += res.report.headingsPreserved;
+                        totalTables += res.report.tablesPreserved;
+                        totalLists += res.report.listsPreserved;
+                    } else {
+                        const text = await file.text();
+                        combinedMarkdown += text + "\n\n---\n\n";
+                    }
+                }
+
+                const finalMd = combinedMarkdown.trim();
+                const analysis = calculateStructureScore(finalMd);
+
+                const batchReport: ConversionFidelityReport = {
+                    format: "Batch",
+                    originalFileName: `Batch_${files.length}_Files`,
+                    fileSizeFormatted: `${files.length} Documents`,
+                    pageOrSlideCount: totalSlidesOrPages,
+                    headingsPreserved: totalHeadings,
+                    tablesPreserved: totalTables,
+                    listsPreserved: totalLists,
+                    mathExpressionsDetected: totalMath,
+                    degradationsAndWarnings: batchWarnings.length > 0 ? batchWarnings : ["Batch compilation successful with clean semantic separation."],
+                    structureScore: analysis.totalScore,
+                    structureGrade: analysis.grade,
+                    structureTier: analysis.tierName,
+                    estimatedTokens: estimateTokens(finalMd),
+                    processedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+                };
+
+                setState({
+                    content: finalMd,
+                    fileHandle: null,
+                    fileName: `Batch_Knowledge_Bundle_${files.length}_Docs.md`,
+                    isModified: true,
+                });
+                setFidelityReport(batchReport);
+                setIsFidelityModalOpen(true);
+            }
+        } catch (err) {
+            console.error("Batch processing error:", err);
+            alert("Failed to process file(s)");
+        } finally {
+            setIsImporting(false);
+        }
+    }, []);
 
     const importFile = useCallback(async () => {
         try {
             if ("showOpenFilePicker" in window) {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const [handle] = await (window as any).showOpenFilePicker({
+                const handles = await (window as any).showOpenFilePicker({
                     types: [
                         {
                             description: "Documents to Markdown",
@@ -143,52 +282,23 @@ export function useFileHandler(initialContent: string) {
                         },
                     ],
                     excludeAcceptAllOption: false,
-                    multiple: false,
+                    multiple: true,
                 });
 
-                const file = await handle.getFile();
-                setIsImporting(true);
-                
-                let text = "";
-                if (file.name.endsWith(".pdf")) {
-                    text = await extractTextFromPDF(file);
-                } else if (file.name.endsWith(".pptx")) {
-                    text = await extractTextFromPPTX(file);
-                } else if (file.name.endsWith(".docx")) {
-                    text = await extractTextFromDOCX(file);
+                const files: File[] = [];
+                for (const h of handles) {
+                    files.push(await h.getFile());
                 }
-
-                setState({
-                    content: text,
-                    fileHandle: null, // Importing creates a new unsaved document
-                    fileName: file.name.replace(/\.(pdf|pptx)$/i, "") + ".md",
-                    isModified: true,
-                });
+                await processFiles(files);
             } else {
                 // Fallback for browsers without File System Access API
                 const input = document.createElement("input");
                 input.type = "file";
-                input.accept = ".pdf,.pptx";
+                input.accept = ".pdf,.pptx,.docx";
+                input.multiple = true;
                 input.onchange = async (e) => {
-                    const files = (e.target as HTMLInputElement).files;
-                    if (!files || files.length === 0) return;
-                    const file = files[0];
-                    setIsImporting(true);
-                    
-                    let text = "";
-                    if (file.name.endsWith(".pdf")) {
-                        text = await extractTextFromPDF(file);
-                    } else if (file.name.endsWith(".pptx")) {
-                        text = await extractTextFromPPTX(file);
-                    }
-
-                    setState({
-                        content: text,
-                        fileHandle: null,
-                        fileName: file.name.replace(/\.(pdf|pptx)$/i, "") + ".md",
-                        isModified: true,
-                    });
-                    setIsImporting(false);
+                    const files = Array.from((e.target as HTMLInputElement).files || []);
+                    await processFiles(files);
                 };
                 input.click();
             }
@@ -197,10 +307,8 @@ export function useFileHandler(initialContent: string) {
                 console.error("Error importing file:", err);
                 alert("Failed to import file");
             }
-        } finally {
-            setIsImporting(false);
         }
-    }, []);
+    }, [processFiles]);
 
     const openFile = useCallback(async () => {
         try {
@@ -229,8 +337,8 @@ export function useFileHandler(initialContent: string) {
                     fileName: file.name,
                     isModified: false,
                 });
+                setFidelityReport(null);
             } else {
-                // Fallback for browsers without File System Access API
                 const input = document.createElement("input");
                 input.type = "file";
                 input.accept = ".md,.markdown,.txt";
@@ -245,6 +353,7 @@ export function useFileHandler(initialContent: string) {
                         fileName: file.name,
                         isModified: false,
                     });
+                    setFidelityReport(null);
                 };
                 input.click();
             }
@@ -256,13 +365,8 @@ export function useFileHandler(initialContent: string) {
         }
     }, []);
 
-    /**
-     * Saves to the currently open file handle.
-     * If no handle exists (untitled doc), falls through to saveFileAs.
-     */
     const saveFile = useCallback(async () => {
         if (!state.fileHandle) {
-            // No handle — delegate to Save As
             return saveFileAs();
         }
         try {
@@ -277,10 +381,6 @@ export function useFileHandler(initialContent: string) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [state.fileHandle, state.content]);
 
-    /**
-     * Opens a Save As dialog so the user can choose a destination.
-     * Works even for untitled (new) documents.
-     */
     const saveFileAs = useCallback(async () => {
         try {
             if ("showSaveFilePicker" in window) {
@@ -304,7 +404,6 @@ export function useFileHandler(initialContent: string) {
                     isModified: false,
                 }));
             } else {
-                // Fallback: download via blob
                 const blob = new Blob([state.content], { type: "text/markdown" });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement("a");
@@ -328,74 +427,20 @@ export function useFileHandler(initialContent: string) {
         e.preventDefault();
         e.stopPropagation();
         
-        const { items, files } = e.dataTransfer;
-
-        // Try to get files from items first (better for File System Access API)
-        if (items && items.length > 0) {
-            const item = items[0];
-            if (item.kind === "file") {
-                try {
-                    const entry = await (item as DataTransferItem & { getAsFileSystemHandle?: () => Promise<FileSystemHandle | null> }).getAsFileSystemHandle?.();
-                    if (entry && entry.kind === "file") {
-                        const file = await (entry as FileSystemFileHandle).getFile();
-                        const isMD = file.name.endsWith(".md") || file.name.endsWith(".markdown") || file.name.endsWith(".txt");
-                        if (isMD) {
-                            const text = await file.text();
-                            setState({
-                                content: text,
-                                fileHandle: entry as FileSystemFileHandle,
-                                fileName: file.name,
-                                isModified: false,
-                            });
-                            return;
-                        }
-                    }
-                } catch (err) {
-                    console.warn("FileSystemHandle access failed, falling back:", err);
-                }
-            }
+        const files = Array.from(e.dataTransfer.files);
+        if (files.length > 0) {
+            await processFiles(files);
         }
-
-        // Fallback to standard files
-        if (files && files.length > 0) {
-            const file = files[0];
-            const isMarkdown = file.name.endsWith(".md") || file.name.endsWith(".markdown") || file.name.endsWith(".txt");
-            const isPDF = file.name.endsWith(".pdf");
-            const isPPTX = file.name.endsWith(".pptx");
-
-            if (isMarkdown) {
-                const text = await file.text();
-                setState({
-                    content: text,
-                    fileHandle: null,
-                    fileName: file.name,
-                    isModified: false,
-                });
-            } else if (isPDF || isPPTX) {
-                setIsImporting(true);
-                try {
-                    const text = isPDF ? await extractTextFromPDF(file) : await extractTextFromPPTX(file);
-                    setState({
-                        content: text,
-                        fileHandle: null,
-                        fileName: file.name.replace(/\.(pdf|pptx)$/i, "") + ".md",
-                        isModified: true,
-                    });
-                } catch (err) {
-                    console.error("Drop import failed:", err);
-                    alert("Failed to import dropped file");
-                } finally {
-                    setIsImporting(false);
-                }
-            }
-        }
-    }, []);
+    }, [processFiles]);
 
     return {
         content: state.content,
         fileName: state.fileName,
         isModified: state.isModified,
         fileHandle: state.fileHandle,
+        fidelityReport,
+        isFidelityModalOpen,
+        setIsFidelityModalOpen,
         setContent,
         openFile,
         saveFile,
@@ -408,5 +453,4 @@ export function useFileHandler(initialContent: string) {
         canUndo: historyIndex > 0,
         canRedo: historyIndex < history.length - 1,
     };
-
 }
